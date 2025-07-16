@@ -1,2 +1,2 @@
 # QuickPulse.Show
-Please allow `this` to introduce myself, hope you guess my type.
+Please allow `this` to introduce oneself, hope you guess my type.

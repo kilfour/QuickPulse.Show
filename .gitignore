@@ -1,0 +1,9 @@
+**/bin/*
+**/obj/*
+*.user
+*.suo
+/packages
+temp*.md
+*.log
+*.qr
+*.qv
