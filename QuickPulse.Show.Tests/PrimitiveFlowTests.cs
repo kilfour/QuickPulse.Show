@@ -1,27 +1,10 @@
-using QuickPulse.Arteries;
+using QuickPulse.Show.Tests._tools;
+
+
 namespace QuickPulse.Show.Tests;
 
-
-public class PrimitivesFlowTests
+public class PrimitiveFlowTests : AbstractFlowTests
 {
-    private Signal<object> signal;
-
-    public PrimitivesFlowTests()
-    {
-        signal = Signal.From(Flows.PrimitiveFlow).SetArtery(new TheCollector<string>());
-    }
-
-    private List<string> GetTheExhibit()
-    {
-        return signal.GetArtery<TheCollector<string>>().TheExhibit;
-    }
-
-    private string Pulse(object obj)
-    {
-        signal.Pulse(obj);
-        return GetTheExhibit().First();
-    }
-
     [Fact]
     public void Pulse_Null() =>
         Assert.Equal("null", Pulse(null!));

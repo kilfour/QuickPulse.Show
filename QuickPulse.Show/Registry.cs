@@ -4,7 +4,7 @@ namespace QuickPulse.Show;
 
 public static class Registry
 {
-    private static readonly Dictionary<Type, Func<object, string>> _instances = new();
+    private static readonly Dictionary<Type, Func<object, string>> registered = new();
 
     static Registry()
     {
@@ -35,12 +35,16 @@ public static class Registry
 
     public static void Register<T>(Func<T, string> show)
     {
-        _instances[typeof(T)] = x => show((T)x!);
+        registered[typeof(T)] = x => show((T)x!);
+    }
+    public static bool HasType(Type type)
+    {
+        return registered.ContainsKey(type);
     }
 
     public static Func<object?, string>? Get(Type type)
     {
-        if (_instances.TryGetValue(type, out var val)) return val!;
+        if (registered.TryGetValue(type, out var val)) return val!;
         return null;
     }
 }
