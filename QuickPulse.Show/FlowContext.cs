@@ -19,6 +19,7 @@ public record FlowContext
     private readonly HashSet<object> visited = new(ReferenceEqualityComparer.Instance);
     public bool AlreadyVisited(object obj)
     {
+        if (obj == null || obj.GetType().IsValueType) return false; // just to be on the safe side
         if (visited.Contains(obj)) return true;
         visited.Add(obj);
         return false;
