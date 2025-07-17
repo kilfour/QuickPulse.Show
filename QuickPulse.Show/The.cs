@@ -4,8 +4,6 @@ using QuickPulse.Bolts;
 
 namespace QuickPulse.Show;
 
-public record ObjectProperty(string Name, object Value);
-
 public static class The
 {
     private readonly static Flow<Unit> LeftBrace = Pulse.Trace("{ ");
