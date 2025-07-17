@@ -4,12 +4,27 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Version>0.1.0</Version>
+    <Authors>Kilfour</Authors>
+    <PackageId>QuickPulse.Show</PackageId>
+    <Description>Please allow `this` to introduce oneself, hope you guess my type.</Description>
+    <RepositoryUrl>https://github.com/kilfour/QuickPulse.Show</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>debugging;diagnostics;pretty-printing;quickpulse</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
-
   
-
   <ItemGroup>
-    <ProjectReference Include="..\..\QuickPulse\QuickPulse\QuickPulse.csproj" />
+    <None Include="..\README.md" Pack="true" PackagePath="" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="QuickPulse" Version="0.1.2" />
+  </ItemGroup>
+
+  <!-- <ItemGroup>
+    <ProjectReference Include="..\..\QuickPulse\QuickPulse\QuickPulse.csproj" />
+  </ItemGroup> -->
 
 </Project>
