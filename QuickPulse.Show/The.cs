@@ -59,7 +59,6 @@ public static class The
         from input in Pulse.Start<(object Label, object Value)>()
         from context in Pulse.Gather<FlowContext>()
         from key in Pulse.ToFlow(Flow!, input.Label)
-
         from colon in Colon
         from _ in Pulse.Scoped<FlowContext>(
            a => a.DisableIndent(),
@@ -82,8 +81,7 @@ public static class The
         from leftBrace in LeftBrace
         from prime in Pulse.Scoped<FlowContext>(
             a => a.PrimeStartOfCollection(),
-            Pulse.ToFlow(Interspersed, input.Cast<object>())
-        )
+            Pulse.ToFlow(Interspersed, input.Cast<object>()))
         from spacing in Spacing
         from _ in Pulse.Scoped<FlowContext>(
             a => a.EnableIndent(), RightBrace)
