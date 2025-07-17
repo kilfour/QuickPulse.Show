@@ -74,6 +74,7 @@ public static class The
     private readonly static Flow<object> Object =
         from input in Pulse.Start<object>()
         from context in Pulse.Gather<FlowContext>()
+        from setStartTrue in Pulse.Effect(() => context.Value.StartOfCollection = true)
         let props = input.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
         let labeledValues = props.Select(a => new ObjectProperty(a.Name, a.GetValue(input)!))
         from leftBrace in LeftBrace

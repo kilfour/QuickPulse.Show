@@ -18,4 +18,8 @@ public class CollectionFlowTests : AbstractFlowTests
                 new List<int>([1, 2, 3]),
                 new List<int>([4]),
                 new List<int>([5, 6])])));
+    [Fact]
+    public void Pulse_ObjectList() =>
+        Assert.Equal("[ { Name: \"a\", Age: 1 }, { Name: \"b\", Age: 2 } ]",
+            Pulse(new List<Person>([new Person("a", 1), new Person("b", 2)])));
 }

@@ -7,8 +7,6 @@ public class ObjectFlowTests : AbstractFlowTests
     public void Pulse_SimpleObject() =>
         Assert.Equal("{ Name: \"Alice\", Age: 30 }", Pulse(new Person("Alice", 30)));
 
-    public record Person(string Name, int Age);
-
     [Fact]
     public void Pulse_Cycle()
     {
