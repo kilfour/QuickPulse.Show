@@ -11,6 +11,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     {
         var result = Pulse(new List<int>([1, 2, 3]));
         var reader = LinesReader.FromText(result);
+
         Assert.Equal("[", reader.NextLine());
         Assert.Equal("    1,", reader.NextLine());
         Assert.Equal("    2,", reader.NextLine());
@@ -23,8 +24,8 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     public void Pulse_NestedList_IndentedCorrectly()
     {
         var result = Pulse(new List<List<int>> { new() { 1, 2 }, new() { 3 } });
-        Signal.Tracing<string>().SetArtery(WriteData.ToNewFile()).Pulse(result);
         var reader = LinesReader.FromText(result);
+
         Assert.Equal("[", reader.NextLine());
         Assert.Equal("    [", reader.NextLine());
         Assert.Equal("        1,", reader.NextLine());
@@ -42,6 +43,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     {
         var result = Pulse(new List<Person>([new Person("a", 1), new Person("b", 2)]));
         var reader = LinesReader.FromText(result);
+
         Assert.Equal("[", reader.NextLine());
         Assert.Equal("    {", reader.NextLine());
         Assert.Equal("        Name: \"a\",", reader.NextLine());
