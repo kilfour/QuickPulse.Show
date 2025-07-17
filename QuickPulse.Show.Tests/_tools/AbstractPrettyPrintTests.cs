@@ -1,14 +1,14 @@
 namespace QuickPulse.Show.Tests._tools;
 
-public abstract class AbstractFlowTests
+public abstract class AbstractPrettyPrintTests
 {
     private Signal<object> signal;
     private TheStringCatcher catcher;
 
-    protected AbstractFlowTests()
+    protected AbstractPrettyPrintTests()
     {
         catcher = new();
-        signal = Signal.From(The.Start(new FlowContext())).SetArtery(catcher);
+        signal = Signal.From(The.Start(new FlowContext() { PrettyPrint = true })).SetArtery(catcher);
     }
 
     protected string Pulse(object obj)
@@ -16,4 +16,6 @@ public abstract class AbstractFlowTests
         signal.Pulse(obj);
         return catcher.GetText();
     }
+
+    protected string NewLine = Environment.NewLine;
 }

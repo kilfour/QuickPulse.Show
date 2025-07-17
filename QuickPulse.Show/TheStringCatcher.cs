@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace QuickPulse.Show.Tests._tools;
+namespace QuickPulse.Show;
 
 public class TheStringCatcher : IArtery
 {

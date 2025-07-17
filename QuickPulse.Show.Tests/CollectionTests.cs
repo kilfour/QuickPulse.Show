@@ -1,7 +1,7 @@
 using QuickPulse.Show.Tests._tools;
 namespace QuickPulse.Show.Tests;
 
-public class CollectionFlowTests : AbstractFlowTests
+public class CollectionTests : AbstractFlowTests
 {
     [Fact]
     public void Pulse_IntList() =>

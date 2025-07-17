@@ -37,4 +37,9 @@ public static class Is
     {
         return obj.GetType() == typeof(ObjectProperty);
     }
+
+    public static bool Tuple(object obj)
+    {
+        return obj.GetType().FullName!.StartsWith("System.ValueTuple");
+    }
 }

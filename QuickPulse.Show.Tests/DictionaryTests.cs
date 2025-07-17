@@ -1,7 +1,7 @@
 using QuickPulse.Show.Tests._tools;
 namespace QuickPulse.Show.Tests;
 
-public class DictionaryFlowTests : AbstractFlowTests
+public class DictionaryTests : AbstractFlowTests
 {
     [Fact]
     public void Pulse_IntStringDictionary() =>

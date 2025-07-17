@@ -1,7 +1,8 @@
+using QuickExplainIt.Text;
 using QuickPulse.Show.Tests._tools;
 namespace QuickPulse.Show.Tests;
 
-public class ObjectFlowTests : AbstractFlowTests
+public class ObjectTests : AbstractFlowTests
 {
     [Fact]
     public void Pulse_SimpleObject() =>
@@ -11,16 +12,22 @@ public class ObjectFlowTests : AbstractFlowTests
     public void Pulse_Cycle()
     {
         var node = new Node("root");
-        node.Next = node; // cyclic
-
+        node.Next = node;
         var result = Pulse(node);
         Assert.Equal("{ Name: \"root\", Next: <cycle> }", result);
     }
 
-    public class Node
+    [Fact]
+    public void Pulse_EmptyObject()
     {
-        public string Name { get; }
-        public Node? Next { get; set; }
-        public Node(string name) => Name = name;
+        var result = Pulse(new { });
+        Assert.Equal("{ }", result);
+    }
+
+    [Fact]
+    public void Pulse_Tuple()
+    {
+        var result = Pulse(("a", 1));
+        Assert.Equal("( Item1: \"a\", Item2: 1 )", result);
     }
 }

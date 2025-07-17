@@ -15,7 +15,7 @@ public static class WibblyWobbly
     public static DateTime November(this int day, int year) { return new DateTime(year, 11, day); }
     public static DateTime December(this int day, int year) { return new DateTime(year, 12, day); }
 
-    public static string ToCode(this DateTime date)
+    public static string ToDateString(this DateTime date)
     {
         return
             string.Format(
