@@ -28,11 +28,6 @@ public static class The
     private readonly static Flow<Unit> Colon = Pulse.Trace(": ");
     private readonly static Flow<Unit> Null = Indented("null");
 
-    private static Flow<Unit> EnableIndent(Flow<Unit> flow)
-    {
-        return Pulse.Scoped<FlowContext>(a => a.EnableIndent(), flow);
-    }
-
     private readonly static Flow<object> Primitive =
         from input in Pulse.Start<object?>()
         from context in Pulse.Gather<FlowContext>()
