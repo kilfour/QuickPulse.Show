@@ -3,7 +3,7 @@
 
 
 ```csharp
-Introduce.This(new List<Person> { new("Alice", 26), new("Bob", 21) }, false);
+Introduce.This(new List<Models.Person> { new("Alice", 26), new("Bob", 21) }, false);
     // => "[ { Name: \"Alice\", Age: 26 }, { Name: \"Bob\", Age: 21 } ]"
 ```
 
