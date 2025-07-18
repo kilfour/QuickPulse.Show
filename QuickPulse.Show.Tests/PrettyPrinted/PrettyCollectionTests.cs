@@ -9,7 +9,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     [Fact]
     public void Pulse_IntList()
     {
-        var result = Pulse(new List<int>([1, 2, 3]));
+        var result = Introduce(new List<int>([1, 2, 3]));
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -23,7 +23,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     [Fact]
     public void Pulse_NestedList_IndentedCorrectly()
     {
-        var result = Pulse(new List<List<int>> { new() { 1, 2 }, new() { 3 } });
+        var result = Introduce(new List<List<int>> { new() { 1, 2 }, new() { 3 } });
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -41,7 +41,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     [Fact]
     public void Pulse_ObjectList()
     {
-        var result = Pulse(new List<Person>([new Person("a", 1), new Person("b", 2)]));
+        var result = Introduce(new List<Models.Person>([new Models.Person("a", 1), new Models.Person("b", 2)]));
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -60,7 +60,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     [Fact]
     public void Pulse_ListContainingEmptyObject()
     {
-        var result = Pulse(new List<object> { new { }, new { X = 1 } });
+        var result = Introduce(new List<object> { new { }, new { X = 1 } });
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -76,7 +76,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     [Fact]
     public void Pulse_ListOfNulls()
     {
-        var result = Pulse(new List<object?> { null, null });
+        var result = Introduce(new List<object?> { null, null });
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -89,7 +89,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     [Fact]
     public void Pulse_ListOfTuplesWithNulls()
     {
-        var result = Pulse(new List<(string?, int?)> { (null, 1), ("x", null) });
+        var result = Introduce(new List<(string?, int?)> { (null, 1), ("x", null) });
 
         var reader = LinesReader.FromText(result);
 
@@ -109,7 +109,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     [Fact]
     public void Pulse_ListWithEmptyDictionary()
     {
-        var result = Pulse(new List<Dictionary<string, string>> { new(), new() });
+        var result = Introduce(new List<Dictionary<string, string>> { new(), new() });
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -124,7 +124,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     [Fact]
     public void Pulse_ListOfPolymorphicObjects()
     {
-        var result = Pulse(new List<object?>
+        var result = Introduce(new List<object?>
     {
         42,
         "hello",
@@ -158,7 +158,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     [Fact]
     public void Pulse_ListOfNestedPolymorphicObjects()
     {
-        var result = Pulse(new List<object?>
+        var result = Introduce(new List<object?>
     {
         new List<object>
         {
@@ -202,7 +202,7 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     [Fact]
     public void Pulse_ShapeCollisionInPolymorphicList()
     {
-        var result = Pulse(new List<object>
+        var result = Introduce(new List<object>
             {
                 new NamedObject { X = 1, Y = "one" },       // class with props
                 new { X = 1, Y = "one" },                   // anonymous object

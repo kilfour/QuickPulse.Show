@@ -13,13 +13,13 @@ public class QuickPulseShow
     [Fact]
     [Doc(Order = "1-1", Caption = "", Content =
 @"```csharp
-Introduce.This(new List<Person> { new(""Alice"", 26), new(""Bob"", 21) }, false);
+Introduce.This(new List<Models.Person> { new(""Alice"", 26), new(""Bob"", 21) }, false);
     // => ""[ { Name: \""Alice\"", Age: 26 }, { Name: \""Bob\"", Age: 21 } ]""
 ```
 ")]
     public void InitialExample()
     {
-        var str = Introduce.This(new List<Person> { new("Alice", 26), new("Bob", 21) }, false);
+        var str = Introduce.This(new List<Models.Person> { new("Alice", 26), new("Bob", 21) }, false);
         Assert.Equal("[ { Name: \"Alice\", Age: 26 }, { Name: \"Bob\", Age: 21 } ]", str);
     }
 }

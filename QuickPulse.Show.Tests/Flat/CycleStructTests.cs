@@ -1,4 +1,4 @@
-namespace QuickPulse.Show.Tests;
+namespace QuickPulse.Show.Tests.Flat;
 
 public class CycleStructTests
 {

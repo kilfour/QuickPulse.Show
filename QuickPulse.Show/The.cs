@@ -52,7 +52,8 @@ public static class The
             a => a.IncreaseLevel().EnableIndent().PrimeStartOfCollection(),
             Pulse.ToFlow(Interspersed, input.Cast<object>()))
         from spacing in Spacing
-        from rightBracket in RightSquareBracket
+        from __ in Pulse.Scoped<FlowContext>(
+            a => a.EnableIndent(), RightSquareBracket)
         select input;
 
     private readonly static Flow<(object, object)> LabelledValue =

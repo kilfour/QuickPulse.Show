@@ -1,5 +1,7 @@
 using QuickPulse.Show.Tests._tools;
-namespace QuickPulse.Show.Tests;
+
+
+namespace QuickPulse.Show.Tests.Flat;
 
 public class CollectionTests : AbstractFlowTests
 {
@@ -21,5 +23,5 @@ public class CollectionTests : AbstractFlowTests
     [Fact]
     public void Pulse_ObjectList() =>
         Assert.Equal("[ { Name: \"a\", Age: 1 }, { Name: \"b\", Age: 2 } ]",
-            Pulse(new List<Person>([new Person("a", 1), new Person("b", 2)])));
+            Pulse(new List<Models.Person>([new Models.Person("a", 1), new Models.Person("b", 2)])));
 }

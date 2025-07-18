@@ -15,7 +15,7 @@ public class PrettyDictionaryTests : AbstractPrettyPrintTests
         { "key", null }
     };
 
-        var result = Pulse(dict);
+        var result = Introduce(dict);
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("{", reader.NextLine());

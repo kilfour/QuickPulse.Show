@@ -1,14 +1,13 @@
+using QuickPulse.Arteries;
+
 namespace QuickPulse.Show;
 
 public static class Introduce
 {
-    public static string This(object obj, bool prettyPrint = true)
-    {
-        var artery = new TheStringCatcher();
-        var flowContext = new FlowContext() { PrettyPrint = prettyPrint };
-        Signal.From(The.Start(flowContext))
-            .SetArtery(artery)
-            .Pulse(obj);
-        return artery.GetText();
-    }
+    public static string This(object obj, bool prettyPrint = true) =>
+        Signal.From(The.Start(new FlowContext() { PrettyPrint = prettyPrint }))
+            .SetArtery(TheString.Catcher())
+            .Pulse(obj)
+            .GetArtery<Holden>()
+            .Whispers();
 }

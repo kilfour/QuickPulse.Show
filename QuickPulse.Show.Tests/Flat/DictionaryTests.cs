@@ -1,5 +1,7 @@
 using QuickPulse.Show.Tests._tools;
-namespace QuickPulse.Show.Tests;
+
+
+namespace QuickPulse.Show.Tests.Flat;
 
 public class DictionaryTests : AbstractFlowTests
 {
