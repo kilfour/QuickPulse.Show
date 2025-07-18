@@ -3,39 +3,39 @@ using QuickPulse.Show.Tests._tools;
 
 namespace QuickPulse.Show.Tests.Flat;
 
-public class ObjectTests : AbstractFlowTests
+public class ObjectTests
 {
     [Fact]
-    public void Pulse_SimpleObject() =>
-        Assert.Equal("{ Name: \"Alice\", Age: 30 }", Pulse(new Models.Person("Alice", 30)));
+    public void Introduce_SimpleObject() =>
+        Assert.Equal("{ Name: \"Alice\", Age: 30 }", Introduce.This(new Models.Person("Alice", 30), false));
 
     [Fact]
-    public void Pulse_Cycle()
+    public void Introduce_Cycle()
     {
         var node = new Models.Node("root");
         node.Next = node;
-        var result = Pulse(node);
+        var result = Introduce.This(node, false);
         Assert.Equal("{ Name: \"root\", Next: <cycle> }", result);
     }
 
     [Fact]
-    public void Pulse_EmptyObject()
+    public void Introduce_EmptyObject()
     {
-        var result = Pulse(new { });
+        var result = Introduce.This(new { }, false);
         Assert.Equal("{ }", result);
     }
 
     [Fact]
-    public void Pulse_Tuple()
+    public void Introduce_Tuple()
     {
-        var result = Pulse(("a", 1));
+        var result = Introduce.This(("a", 1), false);
         Assert.Equal("( Item1: \"a\", Item2: 1 )", result);
     }
 
     [Fact]
-    public void Pulse_Coach()
+    public void Introduce_Coach()
     {
-        var result = Pulse(new Models.Coach("name", "email"));
+        var result = Introduce.This(new Models.Coach("name", "email"), false);
         Assert.Equal("{ Name: \"name\", Email: \"email\", Skills: [ ] }", result);
     }
 }

@@ -1,15 +1,14 @@
 using QuickExplainIt.Text;
-using QuickPulse.Arteries;
 using QuickPulse.Show.Tests._tools;
 
 namespace QuickPulse.Show.Tests.PrettyPrinted;
 
-public class PrettyCollectionTests : AbstractPrettyPrintTests
+public class PrettyCollectionTests
 {
     [Fact]
-    public void Pulse_IntList()
+    public void Introduce_IntList()
     {
-        var result = Introduce(new List<int>([1, 2, 3]));
+        var result = Introduce.This(new List<int>([1, 2, 3]));
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -21,9 +20,9 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_NestedList_IndentedCorrectly()
+    public void Introduce_NestedList_IndentedCorrectly()
     {
-        var result = Introduce(new List<List<int>> { new() { 1, 2 }, new() { 3 } });
+        var result = Introduce.This(new List<List<int>> { new() { 1, 2 }, new() { 3 } });
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -39,9 +38,9 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_ObjectList()
+    public void Introduce_ObjectList()
     {
-        var result = Introduce(new List<Models.Person>([new Models.Person("a", 1), new Models.Person("b", 2)]));
+        var result = Introduce.This(new List<Models.Person>([new Models.Person("a", 1), new Models.Person("b", 2)]));
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -58,9 +57,9 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_ListContainingEmptyObject()
+    public void Introduce_ListContainingEmptyObject()
     {
-        var result = Introduce(new List<object> { new { }, new { X = 1 } });
+        var result = Introduce.This(new List<object> { new { }, new { X = 1 } });
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -74,9 +73,9 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_ListOfNulls()
+    public void Introduce_ListOfNulls()
     {
-        var result = Introduce(new List<object?> { null, null });
+        var result = Introduce.This(new List<object?> { null, null });
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -87,9 +86,9 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_ListOfTuplesWithNulls()
+    public void Introduce_ListOfTuplesWithNulls()
     {
-        var result = Introduce(new List<(string?, int?)> { (null, 1), ("x", null) });
+        var result = Introduce.This(new List<(string?, int?)> { (null, 1), ("x", null) });
 
         var reader = LinesReader.FromText(result);
 
@@ -107,9 +106,9 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_ListWithEmptyDictionary()
+    public void Introduce_ListWithEmptyDictionary()
     {
-        var result = Introduce(new List<Dictionary<string, string>> { new(), new() });
+        var result = Introduce.This(new List<Dictionary<string, string>> { new(), new() });
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("[", reader.NextLine());
@@ -122,9 +121,9 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_ListOfPolymorphicObjects()
+    public void Introduce_ListOfPolymorphicObjects()
     {
-        var result = Introduce(new List<object?>
+        var result = Introduce.This(new List<object?>
     {
         42,
         "hello",
@@ -156,9 +155,9 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_ListOfNestedPolymorphicObjects()
+    public void Introduce_ListOfNestedPolymorphicObjects()
     {
-        var result = Introduce(new List<object?>
+        var result = Introduce.This(new List<object?>
     {
         new List<object>
         {
@@ -200,9 +199,9 @@ public class PrettyCollectionTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_ShapeCollisionInPolymorphicList()
+    public void Introduce_ShapeCollisionInPolymorphicList()
     {
-        var result = Introduce(new List<object>
+        var result = Introduce.This(new List<object>
             {
                 new NamedObject { X = 1, Y = "one" },       // class with props
                 new { X = 1, Y = "one" },                   // anonymous object

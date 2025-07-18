@@ -3,12 +3,12 @@ using QuickPulse.Show.Tests._tools;
 
 namespace QuickPulse.Show.Tests.PrettyPrinted;
 
-public class PrettyObjectTests : AbstractPrettyPrintTests
+public class PrettyObjectTests
 {
     [Fact]
-    public void Pulse_SimpleObject()
+    public void Introduce_SimpleObject()
     {
-        var result = Introduce(new Models.Person("Alice", 30));
+        var result = Introduce.This(new Models.Person("Alice", 30));
         var reader = LinesReader.FromText(result);
         Assert.Equal("{", reader.NextLine());
         Assert.Equal("    Name: \"Alice\",", reader.NextLine());
@@ -18,9 +18,9 @@ public class PrettyObjectTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_EmptyObject()
+    public void Introduce_EmptyObject()
     {
-        var result = Introduce(new { });
+        var result = Introduce.This(new { });
         var reader = LinesReader.FromText(result);
         Assert.Equal("{", reader.NextLine());
         Assert.Equal("}", reader.NextLine());
@@ -28,9 +28,9 @@ public class PrettyObjectTests : AbstractPrettyPrintTests
 
 
     [Fact]
-    public void Pulse_AnonymousWithNulls()
+    public void Introduce_AnonymousWithNulls()
     {
-        var result = Introduce(new { A = (string?)null, B = (int?)null });
+        var result = Introduce.This(new { A = (string?)null, B = (int?)null });
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("{", reader.NextLine());
@@ -41,9 +41,9 @@ public class PrettyObjectTests : AbstractPrettyPrintTests
     }
 
     [Fact]
-    public void Pulse_Coach()
+    public void Introduce_Coach()
     {
-        var result = Introduce(new Models.Coach("name", "email"));
+        var result = Introduce.This(new Models.Coach("name", "email"));
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("{", reader.NextLine());

@@ -11,6 +11,6 @@ public class CycleStructTests
         var node = new Node();
         var wrapper = new Wrapper { Node = node };
         node.Value = wrapper;
-        Introduce.This(node);
+        Introduce.This(node, false);
     }
 }

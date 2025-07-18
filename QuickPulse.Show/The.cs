@@ -102,9 +102,9 @@ public static class The
     private readonly static Flow<object> Object =
         from input in Pulse.Start<object>()
         from context in Pulse.Gather<FlowContext>()
-        let props = input.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+        let props = Get.Properties(input, context)
         let labeledProps = props.Select(a => new ObjectProperty(a.Name, a.GetValue(input)!))
-        let fields = input.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
+        let fields = Get.Fields(input, context)
         let labeledFields = fields.Select(a => new ObjectProperty(a.Name, a.GetValue(input)!))
         let labeledValues = labeledProps.Union(labeledFields)
         let isTuple = Is.Tuple(input)

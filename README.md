@@ -60,16 +60,16 @@ The formatter supports:
 * Records and anonymous types
 * User-defined classes and structs, best effort. Which means I tried to break it:  
   *From PrettyCollectionTests.cs:*
-    * `Pulse_IntList`
-    * `Pulse_NestedList_IndentedCorrectly`
-    * `Pulse_ObjectList`
-    * `Pulse_ListContainingEmptyObject`
-    * `Pulse_ListOfNulls`
-    * `Pulse_ListOfTuplesWithNulls`
-    * `Pulse_ListWithEmptyDictionary`
-    * `Pulse_ListOfPolymorphicObjects`
-    * `Pulse_ListOfNestedPolymorphicObjects`
-    * `Pulse_ShapeCollisionInPolymorphicList`
+    * `Introduce_IntList`
+    * `Introduce_NestedList_IndentedCorrectly`
+    * `Introduce_ObjectList`
+    * `Introduce_ListContainingEmptyObject`
+    * `Introduce_ListOfNulls`
+    * `Introduce_ListOfTuplesWithNulls`
+    * `Introduce_ListWithEmptyDictionary`
+    * `Introduce_ListOfPolymorphicObjects`
+    * `Introduce_ListOfNestedPolymorphicObjects`
+    * `Introduce_ShapeCollisionInPolymorphicList`
 
 I'm sure I missed something so I'm gonna keep trying.
 > And if you can break it, ... create an issue, ... make my day.

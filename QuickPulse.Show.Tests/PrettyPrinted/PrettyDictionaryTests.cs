@@ -4,10 +4,10 @@ using QuickPulse.Show.Tests._tools;
 
 namespace QuickPulse.Show.Tests.PrettyPrinted;
 
-public class PrettyDictionaryTests : AbstractPrettyPrintTests
+public class PrettyDictionaryTests
 {
     [Fact]
-    public void Pulse_DictionaryWithNulls()
+    public void Introduce_DictionaryWithNulls()
     {
         var dict = new Dictionary<string, string?>
     {
@@ -15,7 +15,7 @@ public class PrettyDictionaryTests : AbstractPrettyPrintTests
         { "key", null }
     };
 
-        var result = Introduce(dict);
+        var result = Introduce.This(dict);
         var reader = LinesReader.FromText(result);
 
         Assert.Equal("{", reader.NextLine());

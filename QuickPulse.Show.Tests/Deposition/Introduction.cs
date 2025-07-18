@@ -1,5 +1,4 @@
 using QuickExplainIt;
-using QuickPulse.Arteries;
 using QuickPulse.Show.Tests._tools;
 
 namespace QuickPulse.Show.Tests.Deposition;

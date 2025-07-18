@@ -23,6 +23,22 @@ public class Models
             Skills = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         }
     }
+
+    public static class Forest
+    {
+        public abstract class Tree { }
+
+        public class Leaf : Tree
+        {
+            public int Value { get; set; }
+        }
+
+        public class Branch : Tree
+        {
+            public Tree? Left { get; set; }
+            public Tree? Right { get; set; }
+        }
+    }
 }
 
 

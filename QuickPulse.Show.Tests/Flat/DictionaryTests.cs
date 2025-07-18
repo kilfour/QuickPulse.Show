@@ -3,18 +3,18 @@ using QuickPulse.Show.Tests._tools;
 
 namespace QuickPulse.Show.Tests.Flat;
 
-public class DictionaryTests : AbstractFlowTests
+public class DictionaryTests
 {
     [Fact]
-    public void Pulse_IntStringDictionary() =>
-        Assert.Equal("{ 1: \"2\", 3: \"4\" }", Pulse(new Dictionary<int, string> { { 1, "2" }, { 3, "4" } }));
+    public void Introduce_IntStringDictionary() =>
+        Assert.Equal("{ 1: \"2\", 3: \"4\" }", Introduce.This(new Dictionary<int, string> { { 1, "2" }, { 3, "4" } }, false));
 
     [Fact]
-    public void Pulse_NestedDictionaries() =>
+    public void Introduce_NestedDictionaries() =>
         Assert.Equal("{ 1: { 2: \"Quick\" }, 3: { 4: \"Pulse\" } }",
-            Pulse(new Dictionary<int, Dictionary<int, string>>
+           Introduce.This(new Dictionary<int, Dictionary<int, string>>
             {
                 { 1, new Dictionary<int, string> { { 2, "Quick" } } },
                 { 3, new Dictionary<int, string> { { 4, "Pulse" } } }
-            }));
+            }, false));
 }

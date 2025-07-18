@@ -1,5 +1,7 @@
 
 
+using System.Reflection;
+
 namespace QuickPulse.Show;
 
 public record Trap
@@ -12,6 +14,8 @@ public record Trap
 
 public record FlowContext
 {
+    public Dictionary<Type, List<FieldInfo>> FieldsToIgnore { get; init; } = [];
+    public Dictionary<Type, List<PropertyInfo>> PropertiesToIgnore { get; init; } = [];
     public bool PrettyPrint { get; init; } = false;
     public Trap StartOfCollection { get; init; } = new Trap(false);
     public bool NeedsIndent { get; init; } = false;
@@ -49,6 +53,18 @@ public record FlowContext
     public FlowContext PrimeStartOfCollection()
     {
         return this with { StartOfCollection = new Trap(true) };
+    }
+
+    public bool ShouldNotBeIgnored(Type type, PropertyInfo prop)
+    {
+        if (!PropertiesToIgnore.ContainsKey(type)) return true;
+        return !PropertiesToIgnore[type].Contains(prop);
+    }
+
+    public bool ShouldNotBeIgnored(Type type, FieldInfo field)
+    {
+        if (!FieldsToIgnore.ContainsKey(type)) return true;
+        return !FieldsToIgnore[type].Contains(field);
     }
 }
 
