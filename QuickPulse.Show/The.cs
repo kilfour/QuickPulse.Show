@@ -5,6 +5,8 @@ namespace QuickPulse.Show;
 
 public static class The
 {
+    private const string CycleMarker = "<cycle>";
+
     private readonly static Flow<Unit> Spacing =
         from context in Pulse.Gather<Ministers>()
         from _ in context.Value.PrettyPrint ? Pulse.Trace(Environment.NewLine) : Pulse.Trace(" ")
@@ -12,7 +14,8 @@ public static class The
 
     private readonly static Flow<Unit> Indent =
         from context in Pulse.Gather<Ministers>()
-        from trace in Pulse.TraceIf(context.Value.DoINeedToIndentThis(), new string(' ', context.Value.Level * 4))
+        let indentString = new string(' ', context.Value.Level * 4)
+        from trace in Pulse.TraceIf<Ministers>(a => a.DoINeedToIndentThis(), indentString)
         select Unit.Instance;
 
     private static Flow<Unit> Indented(string str) => Indent.Then(Pulse.Trace(str));
@@ -28,35 +31,31 @@ public static class The
         from __ in Pulse.Scoped<Ministers>(a => a.EnableIndent(), Indented(right))
         select Unit.Instance;
 
-    private static Flow<Unit> Braced(Flow<Unit> innerFlow) =>
-       Enclosed("{", "}", innerFlow);
-
-    private static Flow<Unit> Bracketed(Flow<Unit> innerFlow) =>
-       Enclosed("(", ")", innerFlow);
-    private static Flow<Unit> SquareBracketed(Flow<Unit> innerFlow) =>
-       Enclosed("[", "]", innerFlow);
+    private static Flow<Unit> Braced(Flow<Unit> innerFlow) => Enclosed("{", "}", innerFlow);
+    private static Flow<Unit> Bracketed(Flow<Unit> innerFlow) => Enclosed("(", ")", innerFlow);
+    private static Flow<Unit> SquareBracketed(Flow<Unit> innerFlow) => Enclosed("[", "]", innerFlow);
 
     private readonly static Flow<object> Primitive =
         from input in Pulse.Start<object?>()
         from context in Pulse.Gather<Ministers>()
-        from indent in Pulse.When(context.Value.NeedsIndent, Indent)
-        let formatFunction = Registry.Get(input.GetType()) ?? (x => x!.ToString()!)
+        from indent in Pulse.When<Ministers>(a => a.NeedsIndent, Indent)
+        let formatFunction = context.Value.GetFormatFunction(input)
         from _ in Pulse.Trace(formatFunction(input))
         select input;
-
 
     private readonly static Flow<object> InterspersedPrimed =
         from input in Pulse.Start<object>()
         from context in Pulse.Gather<Ministers>()
-        from seperator in Pulse.When(context.Value.StartOfCollection.Restricted(), Separator)
-        from spacing in Spacing
-        from inner in Pulse.ToFlow(Anastasia!, input)
+        from seperator in Pulse.When<Ministers>(a => a.StartOfCollection.Restricted(), Separator)
+        let element = Pulse.ToFlow(Anastasia!, input)
+        from _ in Spacing.Then(element)
         select input;
 
     private readonly static Flow<IEnumerable> Interspersed =
         from input in Pulse.Start<IEnumerable>()
         from context in Pulse.Gather<Ministers>()
-        from _ in Pulse.Scoped<Ministers>(a => a.PrimeStartOfCollection(), Pulse.ToFlow(InterspersedPrimed, input.Cast<object>()))
+        let inner = Pulse.ToFlow(InterspersedPrimed, input.Cast<object>())
+        from _ in Pulse.Scoped<Ministers>(a => a.PrimeStartOfCollection(), inner)
         select input;
 
     private readonly static Flow<IEnumerable> Collection =
@@ -66,16 +65,16 @@ public static class The
 
     private readonly static Flow<(object, object)> LabeledValue =
         from input in Pulse.Start<(object Label, object Value)>()
-        from _ in Pulse.ToFlow(Anastasia!, input.Label)
+        from label in Pulse.ToFlow(Anastasia!, input.Label)
         from colon in Colon
-        from __ in Pulse.Scoped<Ministers>(
-            a => a.DisableIndent(), Pulse.ToFlow(Anastasia!, input.Value))
+        let value = Pulse.ToFlow(Anastasia!, input.Value)
+        from _ in Pulse.Scoped<Ministers>(a => a.DisableIndent(), value)
         select input;
 
     private readonly static Flow<object> KeyValuePair =
         from input in Pulse.Start<object>()
-        from _ in Pulse.Scoped<Ministers>(
-            a => a.EnableIndent(), Pulse.ToFlow(LabeledValue, Get.KeyValueAsTuple(input)))
+        let keyValue = Pulse.ToFlow(LabeledValue, Get.KeyValueAsTuple(input))
+        from _ in Pulse.Scoped<Ministers>(a => a.EnableIndent(), keyValue)
         select input;
 
     private readonly static Flow<IDictionary> Dictionary =
@@ -85,23 +84,24 @@ public static class The
 
     private readonly static Flow<ObjectProperty> Property =
         from input in Pulse.Start<ObjectProperty>()
-        from indent in Indent
-        from key in Pulse.Trace(input.Name)
+        from key in Indent.Then(Pulse.Trace(input.Name))
         from colon in Colon
-        from _ in Pulse.Scoped<Ministers>(
-            a => a.DisableIndent(), Pulse.ToFlow(Anastasia!, input.Value))
+        let value = Pulse.ToFlow(Anastasia!, input.Value)
+        from _ in Pulse.Scoped<Ministers>(a => a.DisableIndent(), value)
         select input;
 
     private readonly static Flow<object> Tuple =
         from input in Pulse.Start<object>()
         from context in Pulse.Gather<Ministers>()
-        from _ in Bracketed(Pulse.ToFlow(Interspersed, Get.FieldValues(input, context)))
+        let items = Get.FieldValues(input, context)
+        from _ in Bracketed(Pulse.ToFlow(Interspersed, items))
         select input;
 
     private readonly static Flow<object> Object =
         from input in Pulse.Start<object>()
         from context in Pulse.Gather<Ministers>()
-        from _ in Braced(Pulse.ToFlow(Interspersed, Get.ObjectProperties(input, context)))
+        let items = Get.ObjectProperties(input, context)
+        from _ in Braced(Pulse.ToFlow(Interspersed, items))
         select input;
 
     private readonly static Flow<object> Anastasia =
@@ -110,7 +110,7 @@ public static class The
         from _ in Pulse.FirstOf(
             (() => input == null, /*                      */ () => Null),
             (() => Is.Primitive(input), /*                */ () => Pulse.ToFlow(Primitive, input)),
-            (() => context.Value.AlreadyVisited(input), /**/ () => Pulse.Trace("<cycle>")),
+            (() => context.Value.AlreadyVisited(input), /**/ () => Pulse.Trace(CycleMarker)),
             (() => Is.ObjectProperty(input), /*           */ () => Pulse.ToFlow(Property, (ObjectProperty)input)),
             (() => Is.Dictionary(input), /*               */ () => Pulse.ToFlow(Dictionary, (IDictionary)input)),
             (() => Is.KeyValuePair(input), /*             */ () => Pulse.ToFlow(KeyValuePair, input)),

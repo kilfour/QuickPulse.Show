@@ -34,7 +34,7 @@ public class SupportedTypes
 {
     [Fact]
     [Doc(Order = "1-4-1", Caption = "", Content =
-@"```")]
+@"")]
     public void Placeholder()
     {
     }

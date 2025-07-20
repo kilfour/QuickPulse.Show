@@ -2,6 +2,7 @@ namespace QuickPulse.Show.TimeyWimey;
 
 public static class WibblyWobbly
 {
+    // , TimeOnly? time = null
     public static DateTime January(this int day, int year) { return new DateTime(year, 1, day); }
     public static DateTime February(this int day, int year) { return new DateTime(year, 2, day); }
     public static DateTime March(this int day, int year) { return new DateTime(year, 3, day); }
@@ -15,14 +16,27 @@ public static class WibblyWobbly
     public static DateTime November(this int day, int year) { return new DateTime(year, 11, day); }
     public static DateTime December(this int day, int year) { return new DateTime(year, 12, day); }
 
-    public static string ToDateString(this DateTime date)
+
+    public static string ToHumanDateTime(this DateTime datetime) =>
+        $"{datetime.Day}.{months[datetime.Month]}({datetime.Year})"; // TimeOnly.FromDateTime(date)
+
+    public static string ToHumanDate(this DateOnly date) =>
+        $"{date.Day}.{months[date.Month]}({date.Year})";
+
+    public static string ToHumanTime(this TimeOnly time)
     {
-        return
-            string.Format(
-                "{0}.{1}({2})",
-                date.Day,
-                months[date.Month],
-                date.Year);
+        var h = time.Hour;
+        var m = time.Minute;
+        var s = time.Second;
+        var ms = time.Millisecond;
+
+        if (s == 0 && ms == 0)
+            return $"{h}.Hours({m:D2})";
+
+        if (ms == 0)
+            return $"{h}.Hours({m:D2}.Minutes({s:D2}))";
+
+        return $"{h}.Hours({m:D2}.Minutes({s:D2}.Seconds({ms:D3})))";
     }
 
     private static readonly Dictionary<int, string> months =
@@ -41,4 +55,9 @@ public static class WibblyWobbly
             {11, "November"},
             {12, "December"},
         };
+
+    // public static TimeOnly Hours(this int hours)
+    // {
+    //     return new TimeOnly(hours, 0);
+    // }
 }

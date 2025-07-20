@@ -71,8 +71,6 @@ I'm sure I missed something so I'm gonna keep trying.
 > And if you can break it, ... create an issue, ... make my day.
 
 
-```
-
 ## Customization
 Currently, `Introduce.This` is not configurable. Future versions will support:
 

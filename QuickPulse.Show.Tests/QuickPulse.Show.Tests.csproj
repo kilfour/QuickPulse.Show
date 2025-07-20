@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="QuickFuzzr" Version="0.1.0" />
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
   </ItemGroup>
@@ -23,8 +24,12 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="QuickPulse" Version="0.1.5" />
+    <!-- <PackageReference Include="QuickPulse" Version="0.1.5" /> -->
     <PackageReference Include="QuickPulse.Explains" Version="0.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\QuickPulse\QuickPulse\QuickPulse.csproj" />
   </ItemGroup>
 
 </Project>

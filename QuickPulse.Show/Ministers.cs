@@ -6,46 +6,26 @@ namespace QuickPulse.Show;
 
 public record Ministers
 {
+    public bool NeedsIndent { get; init; } = false;
+    public Ministers EnableIndent() => this with { NeedsIndent = true };
+    public Ministers DisableIndent() => this with { NeedsIndent = false };
+    public bool PrettyPrint { get; init; } = false;
+    public bool DoINeedToIndentThis() => PrettyPrint && NeedsIndent;
+
+
+    public int Level { get; init; } = 0;
+    public Ministers IncreaseLevel() => this with { Level = Level + 1 };
+
+
+    public Valve StartOfCollection { get; init; } = Valve.Closed();
+    public Ministers PrimeStartOfCollection() => this with { StartOfCollection = Valve.Install() };
+
+
+    public Func<object?, string> GetFormatFunction(object obj) =>
+        Registry.Get(obj.GetType()) ?? (x => x!.ToString()!);
+
     public Dictionary<Type, List<FieldInfo>> FieldsToIgnore { get; init; } = [];
     public Dictionary<Type, List<PropertyInfo>> PropertiesToIgnore { get; init; } = [];
-    public bool PrettyPrint { get; init; } = false;
-    public Valve StartOfCollection { get; init; } = Valve.Closed();
-    public bool NeedsIndent { get; init; } = false;
-    public int Level { get; init; } = 0;
-    private readonly HashSet<object> visited = new(ReferenceEqualityComparer.Instance);
-
-    public bool AlreadyVisited(object obj)
-    {
-        if (obj == null || obj.GetType().IsValueType) return false; // just to be on the safe side
-        if (visited.Contains(obj)) return true;
-        visited.Add(obj);
-        return false;
-    }
-
-    public bool DoINeedToIndentThis()
-    {
-        return PrettyPrint && NeedsIndent;
-    }
-
-    public Ministers IncreaseLevel()
-    {
-        return this with { Level = Level + 1 };
-    }
-
-    public Ministers EnableIndent()
-    {
-        return this with { NeedsIndent = true };
-    }
-
-    public Ministers DisableIndent()
-    {
-        return this with { NeedsIndent = false };
-    }
-
-    public Ministers PrimeStartOfCollection()
-    {
-        return this with { StartOfCollection = Valve.Install() };
-    }
 
     public bool ShouldNotBeIgnored(Type type, PropertyInfo prop)
     {
@@ -57,6 +37,15 @@ public record Ministers
     {
         if (!FieldsToIgnore.ContainsKey(type)) return true;
         return !FieldsToIgnore[type].Contains(field);
+    }
+
+    private readonly HashSet<object> visited = new(ReferenceEqualityComparer.Instance);
+    public bool AlreadyVisited(object obj)
+    {
+        if (obj == null || obj.GetType().IsValueType) return false; // just to be on the safe side
+        if (visited.Contains(obj)) return true;
+        visited.Add(obj);
+        return false;
     }
 }
 
