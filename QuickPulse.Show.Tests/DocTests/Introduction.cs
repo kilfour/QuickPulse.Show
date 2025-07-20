@@ -1,7 +1,7 @@
 using QuickPulse.Explains;
 using QuickPulse.Show.Tests._tools;
 
-namespace QuickPulse.Show.Tests.Deposition;
+namespace QuickPulse.Show.Tests.DocTests;
 
 
 [Doc(Order = "1", Caption = "QuickPulse.Show", Content =
