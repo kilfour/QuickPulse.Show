@@ -24,7 +24,8 @@ Introduce.This(""hi"");                       // => ""\""hi\""""
 Introduce.This(new[] { 1, 2 });             // => ""[ 1, 2 ]""
 Introduce.This((1, ""a""));                   // => ""(1, \""a\"")""
 Introduce.This(new { X = 1, Y = ""Z"" });     // => ""{ X: 1, Y: \""Z\"" }""
-Introduce.This(null);                       // => ""null""")]
+Introduce.This(null);                       // => ""null""
+```")]
     public void Demonstrate()
     {
         Assert.Equal("123", Introduce.This(123, false));

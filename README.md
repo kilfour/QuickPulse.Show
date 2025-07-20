@@ -41,6 +41,7 @@ Introduce.This(new[] { 1, 2 });             // => "[ 1, 2 ]"
 Introduce.This((1, "a"));                   // => "(1, \"a\")"
 Introduce.This(new { X = 1, Y = "Z" });     // => "{ X: 1, Y: \"Z\" }"
 Introduce.This(null);                       // => "null"
+```
 
 ## Supported Types
 *Formatting is recursive, but avoids circular reference handling.*
