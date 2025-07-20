@@ -1,4 +1,5 @@
-using QuickExplainIt.Text;
+using System.Text.Json;
+using QuickPulse.Explains.Text;
 using QuickPulse.Show.Tests._tools;
 
 namespace QuickPulse.Show.Tests.PrettyPrinted;
@@ -13,6 +14,21 @@ public class PrettyObjectTests
         Assert.Equal("{", reader.NextLine());
         Assert.Equal("    Name: \"Alice\",", reader.NextLine());
         Assert.Equal("    Age: 30", reader.NextLine());
+        Assert.Equal("}", reader.NextLine());
+        Assert.True(reader.EndOfContent());
+    }
+
+    [Fact]
+    public void JsonSerializer_SimpleObject()
+    {
+        var result =
+            JsonSerializer.Serialize(new Models.Person("Alice", 30),
+                new JsonSerializerOptions { WriteIndented = true });
+
+        var reader = LinesReader.FromText(result);
+        Assert.Equal("{", reader.NextLine());
+        Assert.Equal("  \"Name\": \"Alice\",", reader.NextLine());
+        Assert.Equal("  \"Age\": 30", reader.NextLine());
         Assert.Equal("}", reader.NextLine());
         Assert.True(reader.EndOfContent());
     }

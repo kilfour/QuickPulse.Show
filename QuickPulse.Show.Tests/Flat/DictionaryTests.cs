@@ -1,6 +1,3 @@
-using QuickPulse.Show.Tests._tools;
-
-
 namespace QuickPulse.Show.Tests.Flat;
 
 public class DictionaryTests

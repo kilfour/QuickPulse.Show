@@ -1,4 +1,4 @@
-using QuickExplainIt;
+using QuickPulse.Explains;
 using QuickPulse.Show.Tests._tools;
 
 namespace QuickPulse.Show.Tests.Deposition;

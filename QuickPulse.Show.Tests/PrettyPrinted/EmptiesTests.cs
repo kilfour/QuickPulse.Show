@@ -1,5 +1,4 @@
-using QuickExplainIt.Text;
-using QuickPulse.Show.Tests._tools;
+using QuickPulse.Explains.Text;
 
 namespace QuickPulse.Show.Tests.PrettyPrinted;
 
