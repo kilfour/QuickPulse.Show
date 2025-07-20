@@ -29,7 +29,7 @@ public class ObjectTests
     public void Introduce_Tuple()
     {
         var result = Introduce.This(("a", 1), false);
-        Assert.Equal("( Item1: \"a\", Item2: 1 )", result);
+        Assert.Equal("( \"a\", 1 )", result);
     }
 
     [Fact]

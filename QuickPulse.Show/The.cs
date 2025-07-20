@@ -98,6 +98,19 @@ public static class The
             Pulse.ToFlow(Flow!, input.Value))
         select input;
 
+    private readonly static Flow<object> Tuple =
+        from input in Pulse.Start<object>()
+        from context in Pulse.Gather<FlowContext>()
+        let fields = Get.FieldValues(input, context)
+        from _ in LeftBracket
+        from __ in Pulse.Scoped<FlowContext>(
+            a => a.IncreaseLevel().EnableIndent().PrimeStartOfCollection(),
+            Pulse.ToFlow(Interspersed, fields))
+        from spacing in Spacing
+        from ___ in Pulse.Scoped<FlowContext>(
+            a => a.EnableIndent(), RightBracket)
+        select input;
+
     private readonly static Flow<object> Object =
         from input in Pulse.Start<object>()
         from context in Pulse.Gather<FlowContext>()
@@ -129,7 +142,7 @@ public static class The
             (() => Is.Dictionary(input), /*               */ () => Pulse.ToFlow(Dictionary, (IDictionary)input)),
             (() => Is.KeyValuePair(input), /*             */ () => Pulse.ToFlow(KeyValuePair, input)),
             (() => Is.Collection(input), /*               */ () => Pulse.ToFlow(Collection, (IEnumerable)input)),
-            (() => Is.Tuple(input), /*                    */ () => Pulse.ToFlow(Object, input)),
+            (() => Is.Tuple(input), /*                    */ () => Pulse.ToFlow(Tuple, input)),
             (() => Is.Object(input), /*                   */ () => Pulse.ToFlow(Object, input)))
         select input;
 

@@ -3,7 +3,7 @@
 
 
 ```csharp
-Introduce.This(new List<Models.Person> { new("Alice", 26), new("Bob", 21) }, false);
+Introduce.This(new List<Person> { new("Alice", 26), new("Bob", 21) }, false);
     // => "[ { Name: \"Alice\", Age: 26 }, { Name: \"Bob\", Age: 21 } ]"
 ```
 
@@ -19,11 +19,6 @@ Or ... *would you like to know more ?*
 ## Purpose
 
 **QuickPulse.Show** provides lightweight, opinionated, ~~pretty-printing~~ honest-printing for diagnostics, debugging, and testing. It's not a general-purpose serializer, it's meant to give you a clean, readable snapshot of values as they flow through your code.
-
-## The Interface Definition Contract (sic)
-The method components are described below for implementers and consumers requiring integration-level understanding.
-
-Adding `false` to the `Introduce.This(...)` method disables multi-line printing (which is the current default).
 
 
 ## Output Style

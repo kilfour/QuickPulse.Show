@@ -94,12 +94,12 @@ public class PrettyCollectionTests
 
         Assert.Equal("[", reader.NextLine());
         Assert.Equal("    (", reader.NextLine());
-        Assert.Equal("        Item1: null,", reader.NextLine());
-        Assert.Equal("        Item2: 1", reader.NextLine());
+        Assert.Equal("        null,", reader.NextLine());
+        Assert.Equal("        1", reader.NextLine());
         Assert.Equal("    ),", reader.NextLine());
         Assert.Equal("    (", reader.NextLine());
-        Assert.Equal("        Item1: \"x\",", reader.NextLine());
-        Assert.Equal("        Item2: null", reader.NextLine());
+        Assert.Equal("        \"x\",", reader.NextLine());
+        Assert.Equal("        null", reader.NextLine());
         Assert.Equal("    )", reader.NextLine());
         Assert.Equal("]", reader.NextLine());
         Assert.True(reader.EndOfContent());
@@ -231,8 +231,8 @@ public class PrettyCollectionTests
 
         // Tuple
         Assert.Equal("    (", reader.NextLine());
-        Assert.Equal("        Item1: 1,", reader.NextLine()); // or X: 1, if named
-        Assert.Equal("        Item2: \"one\"", reader.NextLine());
+        Assert.Equal("        1,", reader.NextLine()); // or X: 1, if named
+        Assert.Equal("        \"one\"", reader.NextLine());
         Assert.Equal("    ),", reader.NextLine());
 
         // Dictionary

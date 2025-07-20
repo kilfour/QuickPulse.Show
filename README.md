@@ -3,10 +3,9 @@
 
 
 ```csharp
-Introduce.This(new List<Person> { new("Alice", 26), new("Bob", 21) }, false);
+Introduce.This(new List<Models.Person> { new("Alice", 26), new("Bob", 21) }, false);
     // => "[ { Name: \"Alice\", Age: 26 }, { Name: \"Bob\", Age: 21 } ]"
 ```
-
 Erm, ... well, ... I guess we're done here, ...  
 
 That's it really, ... One method.  
@@ -16,18 +15,14 @@ So yeah there's that.
 
 Or ... *would you like to know more ?*
 
+
 ## Purpose
-
-**QuickPulse.Show** provides lightweight, opinionated, ~~pretty-printing~~ honest-printing for diagnostics, debugging, and testing. It's not a general-purpose serializer, it's meant to give you a clean, readable snapshot of values as they flow through your code.
-
-## The Interface Definition Contract (sic)
-The method components are described below for implementers and consumers requiring integration-level understanding.
-
-Adding `false` to the `Introduce.This(...)` method disables multi-line printing (which is the current default).
+**QuickPulse.Show** provides lightweight, opinionated, ~~pretty-printing~~ honest-printing for diagnostics,
+debugging, and testing. It's not a general-purpose serializer, it's meant to give you a clean,
+readable snapshot of values as they flow through your code.
 
 
 ## Output Style
-
 The output follows a C#-inspired, developer-friendly style:
 
 * **Objects** use `{ Prop: Value }` syntax
@@ -37,6 +32,8 @@ The output follows a C#-inspired, developer-friendly style:
 * **Tuples** and anonymous types print with parentheses or braces respectively
 * **Null** prints as `null`
 
+
+
 ```csharp
 Introduce.This(123);                        // => "123"
 Introduce.This("hi");                       // => "\"hi\""
@@ -44,10 +41,8 @@ Introduce.This(new[] { 1, 2 });             // => "[ 1, 2 ]"
 Introduce.This((1, "a"));                   // => "(1, \"a\")"
 Introduce.This(new { X = 1, Y = "Z" });     // => "{ X: 1, Y: \"Z\" }"
 Introduce.This(null);                       // => "null"
-```
 
 ## Supported Types
-
 *Formatting is recursive, but avoids circular reference handling.*
 
 The formatter supports:
@@ -74,8 +69,10 @@ The formatter supports:
 I'm sure I missed something so I'm gonna keep trying.
 > And if you can break it, ... create an issue, ... make my day.
 
-## Customization
 
+```
+
+## Customization
 Currently, `Introduce.This` is not configurable. Future versions will support:
 
 * Maximum depth / length controls.
