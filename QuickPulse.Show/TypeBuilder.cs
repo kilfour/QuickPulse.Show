@@ -14,8 +14,8 @@ public class TypeBuilder
 
     public string IntroduceThis<T>(T obj, bool prettyPrint = true)
     {
-        return Signal.From(The.Start(
-            new FlowContext()
+        return Signal.From(The.Tsar(
+            new Ministers()
             {
                 PrettyPrint = prettyPrint,
                 FieldsToIgnore = options.FieldsToIgnore,

@@ -4,20 +4,12 @@ using System.Reflection;
 
 namespace QuickPulse.Show;
 
-public record Trap
-{
-    private bool primed;
-    public Trap(bool primed) { this.primed = primed; }
-    //public void Prime() { primed = true; }
-    public bool Spring() { var result = primed; primed = false; return result; }
-}
-
-public record FlowContext
+public record Ministers
 {
     public Dictionary<Type, List<FieldInfo>> FieldsToIgnore { get; init; } = [];
     public Dictionary<Type, List<PropertyInfo>> PropertiesToIgnore { get; init; } = [];
     public bool PrettyPrint { get; init; } = false;
-    public Trap StartOfCollection { get; init; } = new Trap(false);
+    public Valve StartOfCollection { get; init; } = Valve.Closed();
     public bool NeedsIndent { get; init; } = false;
     public int Level { get; init; } = 0;
     private readonly HashSet<object> visited = new(ReferenceEqualityComparer.Instance);
@@ -35,24 +27,24 @@ public record FlowContext
         return PrettyPrint && NeedsIndent;
     }
 
-    public FlowContext IncreaseLevel()
+    public Ministers IncreaseLevel()
     {
         return this with { Level = Level + 1 };
     }
 
-    public FlowContext EnableIndent()
+    public Ministers EnableIndent()
     {
         return this with { NeedsIndent = true };
     }
 
-    public FlowContext DisableIndent()
+    public Ministers DisableIndent()
     {
         return this with { NeedsIndent = false };
     }
 
-    public FlowContext PrimeStartOfCollection()
+    public Ministers PrimeStartOfCollection()
     {
-        return this with { StartOfCollection = new Trap(true) };
+        return this with { StartOfCollection = Valve.Install() };
     }
 
     public bool ShouldNotBeIgnored(Type type, PropertyInfo prop)
