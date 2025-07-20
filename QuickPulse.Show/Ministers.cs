@@ -6,6 +6,7 @@ namespace QuickPulse.Show;
 
 public record Ministers
 {
+    public PrimitivesRegistry Registry { get; } = new PrimitivesRegistry();
     public bool NeedsIndent { get; init; } = false;
     public Ministers EnableIndent() => this with { NeedsIndent = true };
     public Ministers DisableIndent() => this with { NeedsIndent = false };

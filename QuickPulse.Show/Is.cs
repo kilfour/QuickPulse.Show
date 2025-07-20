@@ -4,9 +4,9 @@ namespace QuickPulse.Show;
 
 public static class Is
 {
-    public static bool Primitive(object obj)
+    public static bool Primitive(object obj, PrimitivesRegistry registry)
     {
-        return Registry.HasType(obj.GetType());
+        return registry.HasType(obj.GetType());
     }
 
     public static bool Collection(object obj)

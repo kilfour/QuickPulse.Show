@@ -6,6 +6,12 @@ public class TypeBuilder
 {
     private Options options = new Options();
 
+    public TypeBuilder ToReplace<T>(Action<OptionsBuilder<T>> customize)
+    {
+        customize(new OptionsBuilder<T>(this, options));
+        return this;
+    }
+
     public TypeBuilder To<T>(Action<OptionsBuilder<T>> customize)
     {
         customize(new OptionsBuilder<T>(this, options));

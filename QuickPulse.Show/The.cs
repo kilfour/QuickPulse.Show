@@ -106,17 +106,18 @@ public static class The
 
     private readonly static Flow<object> Anastasia =
         from input in Pulse.Start<object>()
-        from context in Pulse.Gather(new Ministers())
+        from ministers in Pulse.Gather(new Ministers())
+        let registry = ministers.Value.Registry
         from _ in Pulse.FirstOf(
-            (() => input == null, /*                      */ () => Null),
-            (() => Is.Primitive(input), /*                */ () => Pulse.ToFlow(Primitive, input)),
-            (() => context.Value.AlreadyVisited(input), /**/ () => Pulse.Trace(CycleMarker)),
-            (() => Is.ObjectProperty(input), /*           */ () => Pulse.ToFlow(Property, (ObjectProperty)input)),
-            (() => Is.Dictionary(input), /*               */ () => Pulse.ToFlow(Dictionary, (IDictionary)input)),
-            (() => Is.KeyValuePair(input), /*             */ () => Pulse.ToFlow(KeyValuePair, input)),
-            (() => Is.Collection(input), /*               */ () => Pulse.ToFlow(Collection, (IEnumerable)input)),
-            (() => Is.Tuple(input), /*                    */ () => Pulse.ToFlow(Tuple, input)),
-            (() => Is.Object(input), /*                   */ () => Pulse.ToFlow(Object, input)))
+            (() => input == null,                         /**/ () => Null),
+            (() => Is.Primitive(input, registry),         /**/ () => Pulse.ToFlow(Primitive, input)),
+            (() => ministers.Value.AlreadyVisited(input), /**/ () => Pulse.Trace(CycleMarker)),
+            (() => Is.ObjectProperty(input),              /**/ () => Pulse.ToFlow(Property, (ObjectProperty)input)),
+            (() => Is.Dictionary(input),                  /**/ () => Pulse.ToFlow(Dictionary, (IDictionary)input)),
+            (() => Is.KeyValuePair(input),                /**/ () => Pulse.ToFlow(KeyValuePair, input)),
+            (() => Is.Collection(input),                  /**/ () => Pulse.ToFlow(Collection, (IEnumerable)input)),
+            (() => Is.Tuple(input),                       /**/ () => Pulse.ToFlow(Tuple, input)),
+            (() => Is.Object(input),                      /**/ () => Pulse.ToFlow(Object, input)))
         select input;
 
     public static Flow<object> Tsar(Ministers context) =>

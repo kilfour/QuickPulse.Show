@@ -2,11 +2,11 @@ using System.Globalization;
 
 namespace QuickPulse.Show;
 
-public static class Registry
+public class PrimitivesRegistry
 {
-    private static readonly Dictionary<Type, Func<object, string>> registered = new();
+    private readonly Dictionary<Type, Func<object, string>> registered = new();
 
-    static Registry()
+    public PrimitivesRegistry()
     {
         Register<double>(x => ((double)x).ToString("G", CultureInfo.InvariantCulture));
         Register<string>(x => x == null ? "null" : $"\"{x}\"");
@@ -33,16 +33,17 @@ public static class Registry
         Register<DayOfWeek>(x => x.ToString());
     }
 
-    public static void Register<T>(Func<T, string> show)
+    private void Register<T>(Func<T, string> show)
     {
         registered[typeof(T)] = x => show((T)x!);
     }
-    public static bool HasType(Type type)
+
+    public bool HasType(Type type)
     {
         return registered.ContainsKey(type);
     }
 
-    public static Func<object?, string>? Get(Type type)
+    public Func<object?, string>? Get(Type type)
     {
         if (registered.TryGetValue(type, out var val)) return val!;
         return null;
