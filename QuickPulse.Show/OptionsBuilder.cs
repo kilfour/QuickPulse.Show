@@ -13,6 +13,13 @@ public class OptionsBuilder<T>
         this.typeBuilder = typeBuilder;
         this.options = options;
     }
+
+    public TypeBuilder Use(Func<T, string> formatter)
+    {
+        options.RegisterTypeFormatter(formatter);
+        return typeBuilder;
+    }
+
     public TypeBuilder Ignore<TProp>(Expression<Func<T, TProp>> expr)
     {
         var member = AsMemberInfo(expr);

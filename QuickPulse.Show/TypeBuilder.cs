@@ -6,9 +6,9 @@ public class TypeBuilder
 {
     private Options options = new Options();
 
-    public TypeBuilder ToReplace<T>(Action<OptionsBuilder<T>> customize)
+    public TypeBuilder ToReplace<T>(Func<T, string> formatter)
     {
-        customize(new OptionsBuilder<T>(this, options));
+        options.Registry.Register(formatter);
         return this;
     }
 
@@ -25,7 +25,9 @@ public class TypeBuilder
             {
                 PrettyPrint = prettyPrint,
                 FieldsToIgnore = options.FieldsToIgnore,
-                PropertiesToIgnore = options.PropertiesToIgnore
+                PropertiesToIgnore = options.PropertiesToIgnore,
+                Registry = options.Registry,
+                TypeRegistry = options.TypeRegistry
             }))
             .SetArtery(TheString.Catcher())
             .Pulse(obj!)

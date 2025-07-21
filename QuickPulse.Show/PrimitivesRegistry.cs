@@ -33,7 +33,7 @@ public class PrimitivesRegistry
         Register<DayOfWeek>(x => x.ToString());
     }
 
-    private void Register<T>(Func<T, string> show)
+    public void Register<T>(Func<T, string> show)
     {
         registered[typeof(T)] = x => show((T)x!);
     }

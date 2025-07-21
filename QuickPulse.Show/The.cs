@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using QuickPulse.Bolts;
 
 namespace QuickPulse.Show;
@@ -8,14 +9,14 @@ public static class The
     private const string CycleMarker = "<cycle>";
 
     private readonly static Flow<Unit> Spacing =
-        from context in Pulse.Gather<Ministers>()
-        from _ in context.Value.PrettyPrint ? Pulse.Trace(Environment.NewLine) : Pulse.Trace(" ")
+        from ministers in Pulse.Gather<Ministers>()
+        from _ in ministers.Value.PrettyPrint ? Pulse.Trace(Environment.NewLine) : Pulse.Trace(" ")
         select Unit.Instance;
 
     private readonly static Flow<Unit> Indent =
-        from context in Pulse.Gather<Ministers>()
-        let indentString = new string(' ', context.Value.Level * 4)
-        from trace in Pulse.TraceIf<Ministers>(a => a.DoINeedToIndentThis(), indentString)
+        from ministers in Pulse.Gather<Ministers>()
+        let indentString = new string(' ', ministers.Value.Level * 4)
+        from trace in Pulse.TraceIf<Ministers>(a => a.DoINeedToIndentThis(), () => indentString)
         select Unit.Instance;
 
     private static Flow<Unit> Indented(string str) => Indent.Then(Pulse.Trace(str));
@@ -37,15 +38,15 @@ public static class The
 
     private readonly static Flow<object> Primitive =
         from input in Pulse.Start<object?>()
-        from context in Pulse.Gather<Ministers>()
+        from ministers in Pulse.Gather<Ministers>()
         from indent in Pulse.When<Ministers>(a => a.NeedsIndent, Indent)
-        let formatFunction = context.Value.GetFormatFunction(input)
+        let formatFunction = ministers.Value.GetFormatFunction(input)
         from _ in Pulse.Trace(formatFunction(input))
         select input;
 
     private readonly static Flow<object> InterspersedPrimed =
         from input in Pulse.Start<object>()
-        from context in Pulse.Gather<Ministers>()
+        from ministers in Pulse.Gather<Ministers>()
         from seperator in Pulse.When<Ministers>(a => a.StartOfCollection.Restricted(), Separator)
         let element = Pulse.ToFlow(Anastasia!, input)
         from _ in Spacing.Then(element)
@@ -53,7 +54,7 @@ public static class The
 
     private readonly static Flow<IEnumerable> Interspersed =
         from input in Pulse.Start<IEnumerable>()
-        from context in Pulse.Gather<Ministers>()
+        from ministers in Pulse.Gather<Ministers>()
         let inner = Pulse.ToFlow(InterspersedPrimed, input.Cast<object>())
         from _ in Pulse.Scoped<Ministers>(a => a.PrimeStartOfCollection(), inner)
         select input;
@@ -92,17 +93,27 @@ public static class The
 
     private readonly static Flow<object> Tuple =
         from input in Pulse.Start<object>()
-        from context in Pulse.Gather<Ministers>()
-        let items = Get.FieldValues(input, context)
+        from ministers in Pulse.Gather<Ministers>()
+        let items = Get.FieldValues(input, ministers.Value)
         from _ in Bracketed(Pulse.ToFlow(Interspersed, items))
+        select input;
+
+    private readonly static Flow<object> DefaultObject =
+        from input in Pulse.Start<object>()
+        from ministers in Pulse.Gather<Ministers>()
+        let items = Get.ObjectProperties(input, ministers.Value)
+        from _ in Braced(Pulse.ToFlow(Interspersed, items))
         select input;
 
     private readonly static Flow<object> Object =
         from input in Pulse.Start<object>()
-        from context in Pulse.Gather<Ministers>()
-        let items = Get.ObjectProperties(input, context)
-        from _ in Braced(Pulse.ToFlow(Interspersed, items))
+        from ministers in Pulse.Gather<Ministers>()
+        let formatter = ministers.Value.GetObjectFormatFunction(input)
+        from crash in Pulse.Trace(formatter == null ? "" : formatter(input))
+        from __ in Pulse.ToFlowIf(formatter == null, DefaultObject, () => input)
         select input;
+
+
 
     private readonly static Flow<object> Anastasia =
         from input in Pulse.Start<object>()
@@ -120,9 +131,9 @@ public static class The
             (() => Is.Object(input),                      /**/ () => Pulse.ToFlow(Object, input)))
         select input;
 
-    public static Flow<object> Tsar(Ministers context) =>
+    public static Flow<object> Tsar(Ministers ministers) =>
         from input in Pulse.Start<object>()
-        from _ in Pulse.Gather(context)
+        from _ in Pulse.Gather(ministers)
         from __ in Pulse.ToFlow(Anastasia, input)
         select input;
 }

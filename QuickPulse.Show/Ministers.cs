@@ -6,7 +6,17 @@ namespace QuickPulse.Show;
 
 public record Ministers
 {
-    public PrimitivesRegistry Registry { get; } = new PrimitivesRegistry();
+    public PrimitivesRegistry Registry { get; init; } = new PrimitivesRegistry();
+    public Func<object?, string> GetFormatFunction(object obj) =>
+        Registry.Get(obj.GetType()) ?? (x => x!.ToString()!);
+
+    public Dictionary<Type, Func<object, string>> TypeRegistry { get; init; } = new();
+    public Func<object, string> GetObjectFormatFunction(object obj)
+    {
+        if (!TypeRegistry.ContainsKey(obj.GetType())) return null!;
+        return TypeRegistry[obj.GetType()];
+    }
+
     public bool NeedsIndent { get; init; } = false;
     public Ministers EnableIndent() => this with { NeedsIndent = true };
     public Ministers DisableIndent() => this with { NeedsIndent = false };
@@ -22,18 +32,13 @@ public record Ministers
     public Ministers PrimeStartOfCollection() => this with { StartOfCollection = Valve.Install() };
 
 
-    public Func<object?, string> GetFormatFunction(object obj) =>
-        Registry.Get(obj.GetType()) ?? (x => x!.ToString()!);
-
     public Dictionary<Type, List<FieldInfo>> FieldsToIgnore { get; init; } = [];
     public Dictionary<Type, List<PropertyInfo>> PropertiesToIgnore { get; init; } = [];
-
     public bool ShouldNotBeIgnored(Type type, PropertyInfo prop)
     {
         if (!PropertiesToIgnore.ContainsKey(type)) return true;
         return !PropertiesToIgnore[type].Contains(prop);
     }
-
     public bool ShouldNotBeIgnored(Type type, FieldInfo field)
     {
         if (!FieldsToIgnore.ContainsKey(type)) return true;
