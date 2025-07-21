@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace QuickPulse.Show;
+namespace QuickPulse.Show.Bolts;
 
 public static class Is
 {

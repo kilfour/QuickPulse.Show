@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace QuickPulse.Show;
+namespace QuickPulse.Show.Bolts;
 
 public class PrimitivesRegistry
 {

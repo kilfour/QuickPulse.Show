@@ -2,7 +2,7 @@
 
 using System.Reflection;
 
-namespace QuickPulse.Show;
+namespace QuickPulse.Show.Bolts;
 
 public record Ministers
 {

@@ -1,8 +1,8 @@
 using System.Reflection;
 
-namespace QuickPulse.Show;
+namespace QuickPulse.Show.Bolts;
 
-public class Options
+public class Puzzles
 {
     public PrimitivesRegistry Registry { get; } = new PrimitivesRegistry();
 

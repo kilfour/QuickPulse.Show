@@ -57,7 +57,7 @@
 //         var qpResult = Introduce.This(satan);
 //         var qpTime = stopwatch.ElapsedMilliseconds;
 
-//         var options = new JsonSerializerOptions
+//         var puzzles = new JsonSerializerOptions
 //         {
 //             WriteIndented = true,
 //             PropertyNamingPolicy = null, // ← Kill camelCase
@@ -66,7 +66,7 @@
 //         stopwatch.Restart();
 
 //         //var jsonResult = JsonSerializer.Serialize(satan);
-//         var jsonResult = JsonSerializer.Serialize(satan, options);
+//         var jsonResult = JsonSerializer.Serialize(satan, puzzles);
 //         var jsonTime = stopwatch.ElapsedMilliseconds;
 
 //         Signal.ToFile<string>()

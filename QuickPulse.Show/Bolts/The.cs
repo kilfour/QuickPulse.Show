@@ -2,7 +2,7 @@ using System.Collections;
 using System.Diagnostics;
 using QuickPulse.Bolts;
 
-namespace QuickPulse.Show;
+namespace QuickPulse.Show.Bolts;
 
 public static class The
 {

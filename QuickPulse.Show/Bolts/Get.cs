@@ -1,7 +1,8 @@
 using System.Reflection;
+using QuickPulse;
 using QuickPulse.Bolts;
 
-namespace QuickPulse.Show;
+namespace QuickPulse.Show.Bolts;
 
 public static class Get
 {
