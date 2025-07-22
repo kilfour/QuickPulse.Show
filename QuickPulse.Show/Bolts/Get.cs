@@ -1,6 +1,5 @@
 using System.Reflection;
 using QuickPulse;
-using QuickPulse.Bolts;
 
 namespace QuickPulse.Show.Bolts;
 

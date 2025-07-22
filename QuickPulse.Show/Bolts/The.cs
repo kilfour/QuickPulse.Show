@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Diagnostics;
 using QuickPulse.Bolts;
 
 namespace QuickPulse.Show.Bolts;
@@ -112,8 +111,6 @@ public static class The
         from crash in Pulse.Trace(formatter == null ? "" : formatter(input))
         from __ in Pulse.ToFlowIf(formatter == null, DefaultObject, () => input)
         select input;
-
-
 
     private readonly static Flow<object> Anastasia =
         from input in Pulse.Start<object>()
