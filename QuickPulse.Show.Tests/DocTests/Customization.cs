@@ -10,7 +10,21 @@ namespace QuickPulse.Show.Tests.DocTests;
 * Custom format hooks per type.
 * Fine grained control over object properties (Ignore, Customize, ...).
 
-For now, it's designed to *Just Work* for 90% of debugging needs.")]
+For now, it's designed to *Just Work* for 90% of debugging needs.
+
+## Installation
+
+QuickPulse is available on NuGet:
+
+```bash
+Install-Package QuickPulse.Show
+```
+
+Or via the .NET CLI:
+
+```bash
+dotnet add package QuickPulse.Show
+```")]
 public class Customization
 {
     [Fact]
