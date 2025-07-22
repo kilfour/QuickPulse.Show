@@ -14,7 +14,7 @@ For now, it's designed to *Just Work* for 90% of debugging needs.
 
 ## Installation
 
-QuickPulse is available on NuGet:
+QuickPulse.Show is available on NuGet:
 
 ```bash
 Install-Package QuickPulse.Show
