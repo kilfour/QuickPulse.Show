@@ -1,3 +1,5 @@
+using QuickPulse.Show.Tests._tools;
+
 namespace QuickPulse.Show.Tests.Flat;
 
 public class PrimitiveTests
@@ -85,4 +87,8 @@ public class PrimitiveTests
     [Fact]
     public void Introduce_DayOfWeek() =>
         Assert.Equal("Monday", Introduce.This(DayOfWeek.Monday), false);
+
+    [Fact]
+    public void Custom_Enum() =>
+        Assert.Equal("Monday", Introduce.This(Models.Horses.WeekDays.Monday, false));
 }

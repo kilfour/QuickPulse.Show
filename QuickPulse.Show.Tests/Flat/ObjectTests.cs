@@ -38,4 +38,26 @@ public class ObjectTests
         var result = Introduce.This(new Models.Coach("name", "email"), false);
         Assert.Equal("{ Name: \"name\", Email: \"email\", Skills: [ ] }", result);
     }
+
+
+
+    [Fact]
+    public void Object_With_enum()
+    {
+        var result = Introduce.This(new Models.Enumy() { Day = DayOfWeek.Wednesday }, false);
+        Assert.Equal("{ Day: Wednesday }", result);
+    }
+
+    [Fact]
+    public void Object_Horses()
+    {
+        var input = new Models.Horses.TimeSlotJasonDTO
+        {
+            Day = Models.Horses.WeekDays.Wednesday,
+            Start = 8,
+            End = 17
+        };
+        var result = Introduce.This(input, false);
+        Assert.Equal("{ Day: Wednesday, Start: 8, End: 17 }", result);
+    }
 }

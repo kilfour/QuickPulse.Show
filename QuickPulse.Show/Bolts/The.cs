@@ -35,6 +35,12 @@ public static class The
     private static Flow<Unit> Bracketed(Flow<Unit> innerFlow) => Enclosed("(", ")", innerFlow);
     private static Flow<Unit> SquareBracketed(Flow<Unit> innerFlow) => Enclosed("[", "]", innerFlow);
 
+    private readonly static Flow<object> Fallback =
+        from input in Pulse.Start<object?>()
+        from indent in Pulse.When<Ministers>(a => a.NeedsIndent, Indent)
+        from _ in Pulse.Trace(input)
+        select input;
+
     private readonly static Flow<object> Primitive =
         from input in Pulse.Start<object?>()
         from ministers in Pulse.Gather<Ministers>()
@@ -125,7 +131,8 @@ public static class The
             (() => Is.KeyValuePair(input),                /**/ () => Pulse.ToFlow(KeyValuePair, input)),
             (() => Is.Collection(input),                  /**/ () => Pulse.ToFlow(Collection, (IEnumerable)input)),
             (() => Is.Tuple(input),                       /**/ () => Pulse.ToFlow(Tuple, input)),
-            (() => Is.Object(input),                      /**/ () => Pulse.ToFlow(Object, input)))
+            (() => Is.Object(input),                      /**/ () => Pulse.ToFlow(Object, input)),
+            (() => true,                                  /**/ () => Pulse.ToFlow(Fallback, input)))
         select input;
 
     public static Flow<object> Tsar(Ministers ministers) =>
