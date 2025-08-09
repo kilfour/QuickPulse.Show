@@ -1,9 +1,9 @@
 using QuickPulse.Instruments;
-using QuickPulse.Show.TimeyWimey;
+using WibblyWobbly;
 
-namespace QuickPulse.Show.Tests.TimeyWimey;
+namespace QuickPulse.Show.Tests.WibblyWobbly;
 
-public class WibblyWobbly
+public class TimeyWimey
 {
     [Fact]
     public void HumanDate_To_DateOnly()

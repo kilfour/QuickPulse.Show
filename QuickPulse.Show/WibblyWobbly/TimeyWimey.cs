@@ -1,10 +1,9 @@
 using QuickPulse.Instruments;
 
-namespace QuickPulse.Show.TimeyWimey;
+namespace WibblyWobbly;
 
-public static class WibblyWobbly
+public static class TimeyWimey
 {
-    // , TimeOnly? time = null
     public static DateTime January(this int day, int year)
         => new(year, 1, day);
     public static DateTime January(this int day, int year, TimeOnly timeOnly)
