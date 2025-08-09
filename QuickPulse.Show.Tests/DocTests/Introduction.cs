@@ -1,4 +1,4 @@
-using QuickPulse.Explains;
+using QuickPulse.Explains.Deprecated;
 using QuickPulse.Explains.Text;
 using QuickPulse.Show.Tests._tools;
 
