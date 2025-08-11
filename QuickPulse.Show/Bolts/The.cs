@@ -114,7 +114,7 @@ public static class The
         from input in Pulse.Start<object>()
         from ministers in Pulse.Gather<Ministers>()
         let formatter = ministers.Value.GetObjectFormatFunction(input)
-        from crash in Pulse.Trace(formatter == null ? "" : formatter(input))
+        from crash in Pulse.TraceIf(formatter != null, () => formatter(input))
         from __ in Pulse.ToFlowIf(formatter == null, DefaultObject, () => input)
         select input;
 

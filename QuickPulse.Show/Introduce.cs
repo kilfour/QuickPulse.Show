@@ -12,10 +12,10 @@ public static class Introduce
             .GetArtery<Holden>()
             .Whispers();
 
-    public static T PulseToLog<T>(this T item)
+    public static T PulseToLog<T>(this T item, string filename = null!)
     {
         Signal.Tracing<string>()
-            .SetArtery(WriteData.ToFile("_introducing.log"))
+            .SetArtery(WriteData.ToFile(filename))
             .Pulse(This(item!));
         return item;
     }
