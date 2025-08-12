@@ -1,6 +1,6 @@
 using QuickPulse.Explains.Deprecated;
 
-namespace QuickPulse.Show.Tests.DocTests;
+namespace QuickPulse.Show.Tests.DocTests.Chapters;
 
 
 [Doc(Order = "1-5", Caption = "Customization", Content =
@@ -25,7 +25,7 @@ Or via the .NET CLI:
 ```bash
 dotnet add package QuickPulse.Show
 ```")]
-public class Customization
+public class D_Customization
 {
     [Fact]
     [Doc(Order = "1-5-1", Caption = "", Content =

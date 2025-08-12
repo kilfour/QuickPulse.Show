@@ -1,6 +1,6 @@
 using QuickPulse.Explains.Deprecated;
 
-namespace QuickPulse.Show.Tests.DocTests;
+namespace QuickPulse.Show.Tests.DocTests.Chapters;
 
 
 [Doc(Order = "1-4", Caption = "Supported Types", Content =
@@ -30,7 +30,7 @@ The formatter supports:
 I'm sure I missed something so I'm gonna keep trying.
 > And if you can break it, ... create an issue, ... make my day.
 ")]
-public class SupportedTypes
+public class C_SupportedTypes
 {
     [Fact]
     [Doc(Order = "1-4-1", Caption = "", Content =

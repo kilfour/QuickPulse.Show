@@ -1,6 +1,6 @@
 using QuickPulse.Explains.Deprecated;
 
-namespace QuickPulse.Show.Tests.DocTests;
+namespace QuickPulse.Show.Tests.DocTests.Chapters;
 
 
 [Doc(Order = "1-3", Caption = "Output Style", Content =
@@ -13,7 +13,7 @@ namespace QuickPulse.Show.Tests.DocTests;
 * **Tuples** and anonymous types print with parentheses or braces respectively
 * **Null** prints as `null`
 ")]
-public class OutputStyle
+public class B_OutputStyle
 {
     [Fact]
     [Doc(Order = "1-3-1", Caption = "", Content =

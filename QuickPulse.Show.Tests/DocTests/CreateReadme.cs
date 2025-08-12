@@ -1,6 +1,6 @@
 using QuickPulse.Explains.Deprecated;
 
-namespace QuickPulse.Show.Tests._tools;
+namespace QuickPulse.Show.Tests.DocTests;
 
 public class CreateReadme
 {

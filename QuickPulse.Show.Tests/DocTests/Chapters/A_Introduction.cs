@@ -2,13 +2,13 @@ using QuickPulse.Explains.Deprecated;
 using QuickPulse.Explains.Text;
 using QuickPulse.Show.Tests._tools;
 
-namespace QuickPulse.Show.Tests.DocTests;
+namespace QuickPulse.Show.Tests.DocTests.Chapters;
 
 
 [Doc(Order = "1", Caption = "QuickPulse.Show", Content =
 @"> Please allow `this` to introduce oneself, hope you guess my type.
 ")]
-public class Introduction
+public class A_Introduction
 {
     [Fact]
     [Doc(Order = "1-1", Caption = "", Content =
