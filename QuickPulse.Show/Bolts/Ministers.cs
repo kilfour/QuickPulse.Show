@@ -7,6 +7,7 @@ namespace QuickPulse.Show.Bolts;
 public record Ministers
 {
     public PrimitivesRegistry Registry { get; init; } = new PrimitivesRegistry();
+
     public Func<object?, string> GetFormatFunction(object obj) =>
         Registry.Get(obj.GetType()) ?? (x => x!.ToString()!);
 
@@ -45,14 +46,52 @@ public record Ministers
         return !FieldsToIgnore[type].Contains(field);
     }
 
-    private readonly HashSet<object> visited = new(ReferenceEqualityComparer.Instance);
-    public bool AlreadyVisited(object obj)
+    // ---------- NEW: recursion path (identity) ----------
+    public HashSet<object> Path { get; init; } = new(ReferenceEqualityComparer.Instance);
+
+    private static bool IsLeaf(object? x)
+        => x is null || x is string || x.GetType().IsValueType;
+
+    /// Is the node already on the current recursion path?
+    public bool IsOnPath(object? x) => !IsLeaf(x) && Path.Contains(x!);
+
+    /// Push: returns a new Ministers with x added to Path (no-op for leaves).
+    public Ministers Enter(object? x)
     {
-        if (obj == null || obj.GetType().IsValueType) return false; // just to be on the safe side
-        if (visited.Contains(obj)) return true;
-        visited.Add(obj);
-        return false;
+        if (IsLeaf(x)) return this;
+        var next = new HashSet<object>(Path, ReferenceEqualityComparer.Instance) { x! };
+        return this with { Path = next };
+    }
+
+    /// Pop: returns a new Ministers with x removed from Path (no-op for leaves).
+    public Ministers Exit(object? x)
+    {
+        if (IsLeaf(x)) return this;
+        if (!Path.Contains(x!)) return this;
+        var next = new HashSet<object>(Path, ReferenceEqualityComparer.Instance);
+        next.Remove(x!);
+        return this with { Path = next };
     }
 }
 
 
+public sealed class CycleGuard
+{
+    private readonly HashSet<object> _stack = new(ReferenceEqualityComparer.Instance);
+
+    public bool TryEnter(object? node)
+    {
+        if (node is null || node is string) return true;
+        var t = node.GetType();
+        if (t.IsValueType) return true;
+        return _stack.Add(node);
+    }
+
+    public void Exit(object? node)
+    {
+        if (node is null || node is string) return;
+        var t = node.GetType();
+        if (t.IsValueType) return;
+        _stack.Remove(node);
+    }
+}

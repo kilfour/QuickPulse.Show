@@ -117,6 +117,10 @@ public static class The
         from crash in Pulse.TraceIf(formatter != null, () => formatter(input))
         from __ in Pulse.ToFlowIf(formatter == null, DefaultObject, () => input)
         select input;
+    private static Flow<Unit> Guarded(object node, Flow<Unit> inner) =>
+        from _ in Pulse.Scoped<Ministers>(m => m.Enter(node), inner)
+        from __ in Pulse.Scoped<Ministers>(m => m.Exit(node), Pulse.NoOp())
+        select Unit.Instance;
 
     private readonly static Flow<object> Anastasia =
         from input in Pulse.Start<object>()
@@ -125,13 +129,13 @@ public static class The
         from _ in Pulse.FirstOf(
             (() => input == null,                         /**/ () => Null),
             (() => Is.Primitive(input, registry),         /**/ () => Pulse.ToFlow(Primitive, input)),
-            (() => ministers.Value.AlreadyVisited(input), /**/ () => Pulse.Trace(CycleMarker)),
             (() => Is.ObjectProperty(input),              /**/ () => Pulse.ToFlow(Property, (ObjectProperty)input)),
-            (() => Is.Dictionary(input),                  /**/ () => Pulse.ToFlow(Dictionary, (IDictionary)input)),
-            (() => Is.KeyValuePair(input),                /**/ () => Pulse.ToFlow(KeyValuePair, input)),
-            (() => Is.Collection(input),                  /**/ () => Pulse.ToFlow(Collection, (IEnumerable)input)),
-            (() => Is.Tuple(input),                       /**/ () => Pulse.ToFlow(Tuple, input)),
-            (() => Is.Object(input),                      /**/ () => Pulse.ToFlow(Object, input)),
+            (() => ministers.Value.IsOnPath(input),       /**/ () => Pulse.Trace(CycleMarker)),
+            (() => Is.Dictionary(input),                  /**/ () => Guarded(input, Pulse.ToFlow(Dictionary, (IDictionary)input))),
+            (() => Is.KeyValuePair(input),                /**/ () => Guarded(input, Pulse.ToFlow(KeyValuePair, input))),
+            (() => Is.Collection(input),                  /**/ () => Guarded(input, Pulse.ToFlow(Collection, (IEnumerable)input))),
+            (() => Is.Tuple(input),                       /**/ () => Guarded(input, Pulse.ToFlow(Tuple, input))),
+            (() => Is.Object(input),                      /**/ () => Guarded(input, Pulse.ToFlow(Object, input))),
             (() => true,                                  /**/ () => Pulse.ToFlow(Fallback, input)))
         select input;
 

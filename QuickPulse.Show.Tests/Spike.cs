@@ -33,5 +33,11 @@ public class Spike
 
         Assert.Equal("REPLACED", result);
     }
+
+    [Fact]
+    public void PulseToLogTest()
+    {
+        "a Test".PulseToLog("my.log");
+    }
 }
 
