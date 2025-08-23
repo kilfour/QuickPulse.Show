@@ -35,6 +35,16 @@ public class Spike
     }
 
     [Fact]
+    public void Introduce_a_coding_coach()
+    {
+        var result = Please.AllowMe()
+            .To<Models.Coach>(a => a.Use(a => $"new Models.Coach(\"{a.Name}\", \"{a.Email}\")"))
+            .IntroduceThis(new Models.Coach("name", "email"), false);
+
+        Assert.Equal("new Models.Coach(\"name\", \"email\")", result);
+    }
+
+    [Fact]
     public void PulseToLogTest()
     {
         "a Test".PulseToLog("my.log");
