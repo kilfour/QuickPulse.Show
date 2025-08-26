@@ -8,7 +8,7 @@ public class TimeyWimey
     [Fact]
     public void HumanDate_To_DateOnly()
     {
-        Assert.Equal(new DateTime(2025, 1, 20), 20.January(2025));
+        Assert.Equal(new DateOnly(2025, 1, 20), 20.January(2025));
     }
 
     [Fact]
