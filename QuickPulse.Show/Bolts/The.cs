@@ -1,5 +1,4 @@
 using System.Collections;
-using QuickPulse.Bolts;
 
 namespace QuickPulse.Show.Bolts;
 
@@ -117,6 +116,7 @@ public static class The
         from crash in Pulse.TraceIf(formatter != null, () => formatter(input))
         from __ in Pulse.ToFlowIf(formatter == null, DefaultObject, () => input)
         select input;
+
     private static Flow<Unit> Guarded(object node, Flow<Unit> inner) =>
         from _ in Pulse.Scoped<Ministers>(m => m.Enter(node), inner)
         from __ in Pulse.Scoped<Ministers>(m => m.Exit(node), Pulse.NoOp())

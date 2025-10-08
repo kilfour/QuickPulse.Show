@@ -3,6 +3,7 @@ using QuickPulse.Show.Bolts;
 
 namespace QuickPulse.Show;
 
+
 public static class Introduce
 {
     public static string This(object obj, bool prettyPrint = true) =>
