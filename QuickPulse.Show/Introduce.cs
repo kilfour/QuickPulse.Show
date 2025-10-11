@@ -15,8 +15,8 @@ public static class Introduce
 
     public static T PulseToLog<T>(this T item, string filename = null!)
     {
-        Signal.Tracing<string>()
-            .SetArtery(WriteData.ToFile(filename))
+        Signal.From<string>(a => Pulse.Trace(a))
+            .SetArtery(TheLedger.Records(filename))
             .Pulse(This(item!));
         return item;
     }

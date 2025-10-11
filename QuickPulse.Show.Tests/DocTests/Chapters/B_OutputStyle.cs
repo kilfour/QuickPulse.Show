@@ -1,9 +1,9 @@
-using QuickPulse.Explains.Deprecated;
+using QuickPulse.Explains;
 
 namespace QuickPulse.Show.Tests.DocTests.Chapters;
 
-
-[Doc(Order = "1-3", Caption = "Output Style", Content =
+[DocFile]
+[DocContent(
 @"The output follows a C#-inspired, developer-friendly style:
 
 * **Objects** use `{ Prop: Value }` syntax
@@ -16,14 +16,14 @@ namespace QuickPulse.Show.Tests.DocTests.Chapters;
 public class B_OutputStyle
 {
     [Fact]
-    [Doc(Order = "1-3-1", Caption = "", Content =
+    [DocContent(
 @"
 ```csharp
 Introduce.This(123);                        // => ""123""
-Introduce.This(""hi"");                       // => ""\""hi\""""
+Introduce.This(""hi"");                     // => ""\""hi\""""
 Introduce.This(new[] { 1, 2 });             // => ""[ 1, 2 ]""
-Introduce.This((1, ""a""));                   // => ""(1, \""a\"")""
-Introduce.This(new { X = 1, Y = ""Z"" });     // => ""{ X: 1, Y: \""Z\"" }""
+Introduce.This((1, ""a""));                 // => ""(1, \""a\"")""
+Introduce.This(new { X = 1, Y = ""Z"" });   // => ""{ X: 1, Y: \""Z\"" }""
 Introduce.This(null);                       // => ""null""
 ```")]
     public void Demonstrate()

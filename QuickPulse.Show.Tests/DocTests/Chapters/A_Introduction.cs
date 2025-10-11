@@ -1,17 +1,16 @@
-using QuickPulse.Explains.Deprecated;
+using QuickPulse.Explains;
 using QuickPulse.Explains.Text;
 using QuickPulse.Show.Tests._tools;
 
 namespace QuickPulse.Show.Tests.DocTests.Chapters;
 
-
-[Doc(Order = "1", Caption = "QuickPulse.Show", Content =
-@"> Please allow `this` to introduce oneself, hope you guess my type.
-")]
+[DocFile]
+[DocFileHeader("QuickPulse.Show")]
+[DocContent("> Please allow `this` to introduce oneself, hope you guess my type.")]
 public class A_Introduction
 {
     [Fact]
-    [Doc(Order = "1-1", Caption = "", Content =
+    [DocContent(
 @"```csharp
 Introduce.This(new List<Models.Person> { new(""Alice"", 26), new(""Bob"", 21) }, false);
     // => ""[ { Name: \""Alice\"", Age: 26 }, { Name: \""Bob\"", Age: 21 } ]""
@@ -32,7 +31,8 @@ Or ... *would you like to know more ?*
     }
 
     [Fact]
-    [Doc(Order = "1-2", Caption = "Purpose", Content =
+    [DocHeader("Purpose")]
+    [DocContent(
 @"**QuickPulse.Show** provides lightweight, opinionated, ~~pretty-printing~~ honest-printing for diagnostics,
 debugging, and testing. It's not a general-purpose serializer, it's meant to give you a clean,
 readable snapshot of values as they flow through your code.

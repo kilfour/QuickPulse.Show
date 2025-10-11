@@ -1,9 +1,9 @@
-using QuickPulse.Explains.Deprecated;
+using QuickPulse.Explains;
 
 namespace QuickPulse.Show.Tests.DocTests.Chapters;
 
-
-[Doc(Order = "1-5", Caption = "Customization", Content =
+[DocFile]
+[DocContent(
 @"Currently, `Introduce.This` is not configurable. Future versions will support:
 
 * Maximum depth / length controls.
@@ -28,9 +28,5 @@ dotnet add package QuickPulse.Show
 public class D_Customization
 {
     [Fact]
-    [Doc(Order = "1-5-1", Caption = "", Content =
-@"")]
-    public void Placeholder()
-    {
-    }
+    public void Placeholder() { /* Placeholder */ }
 }
