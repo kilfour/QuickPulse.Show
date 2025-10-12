@@ -43,11 +43,5 @@ public class Spike
 
         Assert.Equal("new Models.Coach(\"name\", \"email\")", result);
     }
-
-    [Fact]
-    public void PulseToLogTest()
-    {
-        "a Test".PulseToLog("my.log");
-    }
 }
 

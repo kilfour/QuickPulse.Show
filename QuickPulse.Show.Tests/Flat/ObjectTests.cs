@@ -39,8 +39,6 @@ public class ObjectTests
         Assert.Equal("{ Name: \"name\", Email: \"email\", Skills: [ ] }", result);
     }
 
-
-
     [Fact]
     public void Object_With_enum()
     {
