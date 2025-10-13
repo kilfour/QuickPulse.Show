@@ -72,6 +72,8 @@ public record Ministers
         next.Remove(x!);
         return this with { Path = next };
     }
+
+    public bool WithClass { get; set; } = false;
 }
 
 

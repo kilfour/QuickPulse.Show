@@ -103,7 +103,8 @@ public static class The
         from input in Pulse.Start<object>()
         from ministers in Pulse.Draw<Ministers>()
         let items = Get.ObjectProperties(input, ministers)
-        from _ in Braced(Pulse.ToFlow(Interspersed, items))
+        from _1 in Pulse.TraceIf(ministers.WithClass, () => $"{input.GetType().Name} ")
+        from _2 in Braced(Pulse.ToFlow(Interspersed, items))
         select input;
 
     private readonly static Flow<object> Object =

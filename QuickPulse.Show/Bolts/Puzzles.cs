@@ -4,6 +4,8 @@ namespace QuickPulse.Show.Bolts;
 
 public class Puzzles
 {
+    public bool WithClass { get; set; } = false;
+
     public PrimitivesRegistry Registry { get; } = new PrimitivesRegistry();
 
     public Dictionary<Type, Func<object, string>> TypeRegistry { get; } = new();

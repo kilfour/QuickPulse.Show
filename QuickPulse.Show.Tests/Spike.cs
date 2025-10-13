@@ -43,5 +43,24 @@ public class Spike
 
         Assert.Equal("new Models.Coach(\"name\", \"email\")", result);
     }
+
+    [Fact]
+    public void Introduce_a_named_person()
+    {
+        var result = Please.AllowMe()
+            .ToAddSomeClass()
+            .IntroduceThis(new Models.Person("Alice", 30), false);
+
+        Assert.Equal("Person { Name: \"Alice\", Age: 30 }", result);
+    }
+
+    [Fact]
+    public void Introduce_a_list_of_named_persons()
+    {
+        var result = Please.AllowMe()
+            .ToAddSomeClass()
+            .IntroduceThis(new List<Models.Person>([new Models.Person("a", 1), new Models.Person("b", 2)]), false);
+        Assert.Equal("[ Person { Name: \"a\", Age: 1 }, Person { Name: \"b\", Age: 2 } ]", result);
+    }
 }
 
