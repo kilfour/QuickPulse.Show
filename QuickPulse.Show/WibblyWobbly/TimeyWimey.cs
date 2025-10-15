@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using QuickPulse.Instruments;
 
 namespace WibblyWobbly;
 
+[EditorBrowsable(EditorBrowsableState.Advanced)]
 public static class TimeyWimey
 {
     public static DateOnly January(this int day, int year)
