@@ -1,4 +1,5 @@
 using System.Globalization;
+using WibblyWobbly;
 
 namespace QuickPulse.Show.Bolts;
 
@@ -8,16 +9,12 @@ public class PrimitivesRegistry
 
     public PrimitivesRegistry()
     {
-        Register<double>(x => ((double)x).ToString("G", CultureInfo.InvariantCulture));
+        Register<double>(x => x.ToString("G", CultureInfo.InvariantCulture));
         Register<string>(x => x == null ? "null" : $"\"{x}\"");
-        Register<bool>(x => (bool)x ? "true" : "false");
+        Register<bool>(x => x ? "true" : "false");
         Register<char>(x => $"'{x}'");
-        Register<decimal>(x => ((decimal)x).ToString("G", CultureInfo.InvariantCulture));
+        Register<decimal>(x => x.ToString("G", CultureInfo.InvariantCulture));
         Register<float>(x => ((float)x).ToString("G", CultureInfo.InvariantCulture));
-
-        Register<DateTime>(x => ((DateTime)x).ToString("O"));
-        Register<DateOnly>(x => ((DateOnly)x).ToString("O"));
-        Register<TimeOnly>(x => ((TimeOnly)x).ToString("O"));
 
         Register<int>(x => x.ToString());
 
@@ -30,7 +27,17 @@ public class PrimitivesRegistry
         Register<ulong>(x => x.ToString());
 
         Register<Guid>(x => x.ToString());
-        Register<DayOfWeek>(x => x.ToString());
+
+        Register<DateTime>(x => x.ToString("O"));
+        Register<DateOnly>(x => x.ToString("O"));
+        Register<TimeOnly>(x => x.ToString("O"));
+    }
+
+    public void UsingWibblyWobbly(bool noSeconds)
+    {
+        Register<DateTime>(x => x.ToHumanDate(noSeconds));
+        Register<DateOnly>(x => x.ToHumanDateOnly());
+        Register<TimeOnly>(x => x.ToHumanTime(noSeconds));
     }
 
     public void Register<T>(Func<T, string> show)

@@ -28,9 +28,28 @@ public static class Is
 
     public static bool Object(object obj)
     {
-        var type = obj.GetType();
-        if (type == typeof(string)) return false;
-        return type.IsClass;
+        if (obj is null) return false;
+        var t = obj.GetType();
+
+        // Exclude:
+        if (t.IsPrimitive) return false;
+        if (t.IsEnum) return false;
+        if (t == typeof(string)) return false;
+
+        // // Exclude tuple & KVP (already routed)
+        // if (Is.Tuple(x)) return false;
+        // if (Is.KeyValuePair(x)) return false;
+
+        // // Dictionaries/collections already routed
+        // if (Is.Dictionary(x)) return false;
+        // if (Is.Collection(x)) return false;
+
+        // Everything else (including custom structs / record structs) is “object”
+        return true;
+
+        // var type = obj.GetType();
+        // if (type == typeof(string)) return false;
+        // return type.IsClass;
     }
 
     public static bool ObjectProperty(object obj)

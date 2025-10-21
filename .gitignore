@@ -3,7 +3,7 @@
 *.user
 *.suo
 /packages
-temp*.md
+temp*.*
 *.log
 *.qr
 *.qv

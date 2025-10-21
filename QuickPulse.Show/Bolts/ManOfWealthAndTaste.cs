@@ -10,6 +10,8 @@ public class ManOfWealthAndTaste
     public ManOfWealthAndTaste ToAddSomeClass()
         => Chain.It(() => puzzles.WithClass = true, this);
 
+    public ManOfWealthAndTaste ToUseNonLinearTime(bool noSeconds = false)
+        => Chain.It(() => puzzles.Registry.UsingWibblyWobbly(noSeconds), this);
 
     public ManOfWealthAndTaste ToReplace<T>(Func<T, string> formatter)
         => Chain.It(() => puzzles.Registry.Register(formatter), this);
@@ -26,7 +28,7 @@ public class ManOfWealthAndTaste
                 PropertiesToIgnore = puzzles.PropertiesToIgnore,
                 Registry = puzzles.Registry,
                 TypeRegistry = puzzles.TypeRegistry,
-                WithClass = puzzles.WithClass
+                WithClass = puzzles.WithClass,
             }))
             .SetArtery(TheString.Catcher())
             .Pulse(obj!)

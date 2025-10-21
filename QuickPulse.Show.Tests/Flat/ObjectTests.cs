@@ -58,4 +58,13 @@ public class ObjectTests
         var result = Introduce.This(input, false);
         Assert.Equal("{ Day: Wednesday, Start: 8, End: 17 }", result);
     }
+
+    public readonly record struct GridPoint(int X, int Y);
+
+    [Fact]
+    public void Struct()
+    {
+        var result = Introduce.This(new GridPoint(5, 4), false);
+        Assert.Equal("{ X: 5, Y: 4 }", result); // <= uses fallback
+    }
 }
