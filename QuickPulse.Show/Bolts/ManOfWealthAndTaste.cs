@@ -13,6 +13,9 @@ public class ManOfWealthAndTaste
     public ManOfWealthAndTaste ToSelfReference<T>(Func<T, string> formatter)
         => Chain.It(() => puzzles.SelfReferencingFormatter(formatter), this);
 
+    public ManOfWealthAndTaste ToInline<T>()
+        => Chain.It(() => puzzles.InlineType(typeof(T)), this);
+
     public ManOfWealthAndTaste ToUseNonLinearTime(bool noSeconds = false)
         => Chain.It(() => puzzles.Registry.UsingWibblyWobbly(noSeconds), this);
 
@@ -32,7 +35,8 @@ public class ManOfWealthAndTaste
                 Registry = puzzles.Registry,
                 TypeRegistry = puzzles.TypeRegistry,
                 WithClass = puzzles.WithClass,
-                SelfReferencingRegistry = puzzles.SelfReferencingRegistry
+                SelfReferencingRegistry = puzzles.SelfReferencingRegistry,
+                InlinedTypes = puzzles.InlinedTypes
             }))
             .SetArtery(TheString.Catcher())
             .Pulse(obj!)

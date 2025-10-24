@@ -65,8 +65,7 @@ public class PrettyObjectTests
         Assert.Equal("{", reader.NextLine());
         Assert.Equal("    Name: \"name\",", reader.NextLine());
         Assert.Equal("    Email: \"email\",", reader.NextLine());
-        Assert.Equal("    Skills: [", reader.NextLine());
-        Assert.Equal("    ]", reader.NextLine());
+        Assert.Equal("    Skills: [ ]", reader.NextLine());
         Assert.Equal("}", reader.NextLine());
         Assert.True(reader.EndOfContent());
     }

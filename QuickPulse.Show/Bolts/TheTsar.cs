@@ -15,7 +15,7 @@ public static class The
 
     private readonly static Flow<Unit> Spacing =
         from ministers in Pulse.Draw<Ministers>()
-        from _ in ministers.PrettyPrint ? Pulse.Trace(Environment.NewLine) : Pulse.Trace(" ")
+        from _ in ministers.PrettyPrint && !ministers.Inlined ? Pulse.Trace(Environment.NewLine) : Pulse.Trace(" ")
         select Unit.Instance;
 
     private readonly static Flow<Unit> Indent =
@@ -30,7 +30,7 @@ public static class The
     private readonly static Flow<Unit> Null = Indented("null");
 
     private static Flow<Unit> Enclosed(string left, string right, Flow<Unit> innerFlow) =>
-        from leftBracket in Indented(left)
+        from leftBracket in Pulse.Trace(left)
         from _ in Pulse.Scoped<Ministers>(a => a.IncreaseLevel().EnableIndent(), innerFlow)
         from spacing in Spacing
         from __ in Pulse.Scoped<Ministers>(a => a.EnableIndent(), Indented(right))
@@ -69,7 +69,11 @@ public static class The
 
     private readonly static Flow<IEnumerable> Collection =
         from input in Pulse.Start<IEnumerable>()
-        from _ in SquareBracketed(Pulse.ToFlow(Interspersed, input))
+        from ministers in Pulse.Draw<Ministers>()
+        let needsInlining = ministers.NeedsInlining(input) || input.Count() == 0
+        from _ in needsInlining
+            ? Pulse.Scoped<Ministers>(a => a with { Inlined = true }, Indent.Then(SquareBracketed(Pulse.ToFlow(Interspersed, input))))
+            : Indent.Then(SquareBracketed(Pulse.ToFlow(Interspersed, input)))
         select input;
 
     private readonly static Flow<(object, object)> LabeledValue =
@@ -88,7 +92,7 @@ public static class The
 
     private readonly static Flow<IDictionary> Dictionary =
         from input in Pulse.Start<IDictionary>()
-        from _ in Braced(Pulse.ToFlow(Interspersed, input))
+        from _ in Indent.Then(Braced(Pulse.ToFlow(Interspersed, input)))
         select input;
 
     private readonly static Flow<ObjectProperty> Property =
@@ -103,7 +107,7 @@ public static class The
         from input in Pulse.Start<object>()
         from ministers in Pulse.Draw<Ministers>()
         let items = Get.FieldValues(input, ministers)
-        from _ in Bracketed(Pulse.ToFlow(Interspersed, items))
+        from _ in Indent.Then(Bracketed(Pulse.ToFlow(Interspersed, items)))
         select input;
 
     private readonly static Flow<object> DefaultObject =
@@ -111,15 +115,24 @@ public static class The
         from ministers in Pulse.Draw<Ministers>()
         let items = Get.ObjectProperties(input, ministers)
         from _1 in Pulse.TraceIf(ministers.WithClass, () => $"{input.GetType().Name} ")
-        from _2 in Braced(Pulse.ToFlow(Interspersed, items))
+        from _2 in Indent.Then(Braced(Pulse.ToFlow(Interspersed, items)))
+        select input;
+
+    private readonly static Flow<object> ObjectFinal =
+        from input in Pulse.Start<object>()
+        from ministers in Pulse.Draw<Ministers>()
+        let formatter = ministers.GetObjectFormatFunction(input)
+        from _ in Pulse.TraceIf(formatter != null, () => formatter(input))
+        from __ in Pulse.ToFlowIf(formatter == null, DefaultObject, () => input)
         select input;
 
     private readonly static Flow<object> Object =
         from input in Pulse.Start<object>()
         from ministers in Pulse.Draw<Ministers>()
-        let formatter = ministers.GetObjectFormatFunction(input)
-        from crash in Pulse.TraceIf(formatter != null, () => formatter(input))
-        from __ in Pulse.ToFlowIf(formatter == null, DefaultObject, () => input)
+        let needsInlining = ministers.NeedsInlining(input)
+        from _ in needsInlining
+            ? Indent.Then(Pulse.Scoped<Ministers>(a => a with { Inlined = true }, Pulse.ToFlow(ObjectFinal, input)))
+            : Pulse.ToFlow(ObjectFinal, input)
         select input;
 
     private static Flow<Unit> Guarded(object node, Flow<Unit> inner) =>

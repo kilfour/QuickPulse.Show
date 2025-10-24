@@ -20,6 +20,15 @@ public class PrettyCollectionTests
     }
 
     [Fact]
+    public void Introduce_EmptyList()
+    {
+        var result = Introduce.This(new List<int>([]));
+        var reader = LinesReader.FromText(result);
+        Assert.Equal("[ ]", reader.NextLine());
+        Assert.True(reader.EndOfContent());
+    }
+
+    [Fact]
     public void Introduce_NestedList_IndentedCorrectly()
     {
         var result = Introduce.This(new List<List<int>> { new() { 1, 2 }, new() { 3 } });
@@ -263,5 +272,4 @@ public class PrettyCollectionTests
         Assert.Equal("    ]", reader.NextLine());
         Assert.Equal("}", reader.NextLine());
     }
-
 }

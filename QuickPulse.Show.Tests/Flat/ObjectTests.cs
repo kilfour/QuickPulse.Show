@@ -33,6 +33,14 @@ public class ObjectTests
     }
 
     [Fact]
+    public void Introduce_Tuple_of_Lists()
+    {
+        (IEnumerable<int>, IEnumerable<int>) input = ([1], [1]);
+        var result = Introduce.This(input, false);
+        Assert.Equal("( [ 1 ], [ 1 ] )", result);
+    }
+
+    [Fact]
     public void Introduce_Coach()
     {
         var result = Introduce.This(new Models.Coach("name", "email"), false);

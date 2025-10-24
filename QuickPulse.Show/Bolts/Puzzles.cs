@@ -38,4 +38,11 @@ public class Puzzles
     {
         SelfReferencingRegistry[typeof(T)] = a => formatter((T)a);
     }
+
+    public HashSet<Type> InlinedTypes { get; } = [];
+
+    public void InlineType(Type type)
+    {
+        InlinedTypes.Add(type);
+    }
 }

@@ -1,3 +1,4 @@
+using QuickPulse.Explains.Text;
 using QuickPulse.Show.Tests._tools;
 
 namespace QuickPulse.Show.Tests;
@@ -68,5 +69,42 @@ public class Spike
             .ToSelfReference<Models.Node>(a => $"<cycle: {typeof(Models.Node).Name} {{ Name = \"{a.Name}\" }}>")
             .IntroduceThis(node, false);
         Assert.Equal("{ Name: \"root\", Next: <cycle: Node { Name = \"root\" }> }", result);
+    }
+
+    [Fact]
+    public void Introduce_inlining()
+    {
+        var result = Please.AllowMe()
+            .ToInline<HashSet<string>>()
+            .IntroduceThis(new Models.Coach("name", "email"));
+        var reader = LinesReader.FromText(result);
+        Assert.Equal("{", reader.NextLine());
+        Assert.Equal("    Name: \"name\",", reader.NextLine());
+        Assert.Equal("    Email: \"email\",", reader.NextLine());
+        Assert.Equal("    Skills: [ ]", reader.NextLine());
+        Assert.Equal("}", reader.NextLine());
+        Assert.True(reader.EndOfContent());
+    }
+
+    [Fact]
+    public void Introduce_inlining_object()
+    {
+        var result = Please.AllowMe()
+            .ToInline<Models.Coach>()
+            .IntroduceThis(new Models.Coach("name", "email"));
+        Assert.Equal("{ Name: \"name\", Email: \"email\", Skills: [ ] }", result);
+    }
+
+    [Fact]
+    public void Introduce_inlining_object_in_list()
+    {
+        var result = Please.AllowMe()
+            .ToInline<Models.Person>()
+            .IntroduceThis(new List<Models.Person> { new("1", 1) });
+        var reader = LinesReader.FromText(result);
+        Assert.Equal("[", reader.NextLine());
+        Assert.Equal("    { Name: \"1\", Age: 1 }", reader.NextLine());
+        Assert.Equal("]", reader.NextLine());
+        Assert.True(reader.EndOfContent());
     }
 }

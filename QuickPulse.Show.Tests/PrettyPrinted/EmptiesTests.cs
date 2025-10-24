@@ -19,22 +19,14 @@ public class EmptiesTests
     public void Introduce_EmptyList()
     {
         var result = Introduce.This(new List<int>());
-        var reader = LinesReader.FromText(result);
-
-        Assert.Equal("[", reader.NextLine());
-        Assert.Equal("]", reader.NextLine());
-        Assert.True(reader.EndOfContent());
+        Assert.Equal("[ ]", result);
     }
 
     [Fact]
     public void Introduce_EmptyArray()
     {
-        var result = Introduce.This(new string[0]);
-        var reader = LinesReader.FromText(result);
-
-        Assert.Equal("[", reader.NextLine());
-        Assert.Equal("]", reader.NextLine());
-        Assert.True(reader.EndOfContent());
+        var result = Introduce.This(Array.Empty<string>());
+        Assert.Equal("[ ]", result);
     }
 
     [Fact]
@@ -63,22 +55,14 @@ public class EmptiesTests
     public void Introduce_EmptyHashSet()
     {
         var result = Introduce.This(new HashSet<double>());
-        var reader = LinesReader.FromText(result);
-
-        Assert.Equal("[", reader.NextLine());
-        Assert.Equal("]", reader.NextLine());
-        Assert.True(reader.EndOfContent());
+        Assert.Equal("[ ]", result);
     }
 
     [Fact]
     public void Introduce_EmptyNestedList()
     {
         var result = Introduce.This(new List<List<string>>());
-        var reader = LinesReader.FromText(result);
-
-        Assert.Equal("[", reader.NextLine());
-        Assert.Equal("]", reader.NextLine());
-        Assert.True(reader.EndOfContent());
+        Assert.Equal("[ ]", result);
     }
 
     [Fact]

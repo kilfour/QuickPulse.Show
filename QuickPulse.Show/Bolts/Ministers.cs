@@ -1,6 +1,7 @@
 
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace QuickPulse.Show.Bolts;
 
@@ -22,8 +23,11 @@ public record Ministers
     public Ministers EnableIndent() => this with { NeedsIndent = true };
     public Ministers DisableIndent() => this with { NeedsIndent = false };
     public bool PrettyPrint { get; init; } = false;
-    public bool DoINeedToIndentThis() => PrettyPrint && NeedsIndent;
+    public bool DoINeedToIndentThis() => PrettyPrint && NeedsIndent && !Inlined;
 
+    public bool Inlined { get; init; } = false;
+    public HashSet<Type> InlinedTypes { get; init; } = [];
+    public bool NeedsInlining(object input) => InlinedTypes.Contains(input.GetType());
 
     public int Level { get; init; } = 0;
     public Ministers IncreaseLevel() => this with { Level = Level + 1 };
