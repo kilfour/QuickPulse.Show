@@ -74,10 +74,7 @@ public static class The
 
     private readonly static Flow<IEnumerable> Collection =
         from input in Pulse.Start<IEnumerable>()
-        from needsInlining in Pulse.Draw<Ministers, bool>(a => a.NeedsInlining(input))
-        from _ in Pulse.ScopedIf<Ministers>(
-            needsInlining, a => a with { Inlined = true }, BracketedInterspersed.Dissipate())
-        from __ in Pulse.When(!needsInlining, BracketedInterspersed.Dissipate())
+        from _ in Pulse.Scoped<Ministers>(a => a.SetInlineFlag(input), BracketedInterspersed.Dissipate())
         select input;
 
     private readonly static Flow<(object, object)> LabeledValue =
@@ -132,9 +129,10 @@ public static class The
     private readonly static Flow<object> Object =
         from input in Pulse.Start<object>()
         from needsInlining in Pulse.Draw<Ministers, bool>(a => a.NeedsInlining(input))
+        let flow = Pulse.ToFlow(ObjectFinal, input)
         from _ in needsInlining
-            ? Indent.Then(Pulse.Scoped<Ministers>(a => a with { Inlined = true }, Pulse.ToFlow(ObjectFinal, input)))
-            : Pulse.ToFlow(ObjectFinal, input)
+            ? Indent.Then(Pulse.Scoped<Ministers>(a => a.SetInlineFlag(input), flow))
+            : flow
         select input;
 
     private static Flow<Unit> Guarded(object node, Flow<Unit> inner) =>
@@ -148,6 +146,7 @@ public static class The
         let registry = ministers.Registry
         from _ in Pulse.FirstOf(
             (() => input == null,                 /**/ () => Null),
+            (() => ministers.HasFormatter(input), /**/ () => Pulse.Trace(ministers.GetFormattedString(input)!)),
             (() => Is.Primitive(input, registry), /**/ () => Pulse.ToFlow(Primitive, input)),
             (() => Is.ObjectProperty(input),      /**/ () => Pulse.ToFlow(Property, (ObjectProperty)input)),
             (() => ministers.IsOnPath(input),     /**/ () => Pulse.ToFlow(Cycle, input)),

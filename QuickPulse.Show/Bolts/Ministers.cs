@@ -1,5 +1,6 @@
 
 
+using System.Collections;
 using System.Reflection;
 
 namespace QuickPulse.Show.Bolts;
@@ -27,7 +28,10 @@ public record Ministers
     public bool Inlined { get; init; } = false;
     public HashSet<Type> InlinedTypes { get; init; } = [];
     public bool NeedsInlining(object input) => InlinedTypes.Contains(input.GetType())
-        || (input as System.Collections.IEnumerable)?.Count() == 0;
+        || (input as IEnumerable)?.Count() == 0;
+
+    public Ministers SetInlineFlag(object input)
+        => this with { Inlined = NeedsInlining(input) };
 
     public int Level { get; init; } = 0;
     public Ministers IncreaseLevel() => this with { Level = Level + 1 };
@@ -83,6 +87,21 @@ public record Ministers
     {
         if (!SelfReferencingRegistry.ContainsKey(obj.GetType())) return null!;
         return SelfReferencingRegistry[obj.GetType()];
+    }
+
+    public Dictionary<Func<Type, bool>, Func<object, string>> Formatters { get; init; } = [];
+
+    public bool HasFormatter(object input)
+    {
+        return Formatters.Any(a => a.Key(input.GetType()));
+    }
+
+    public string? GetFormattedString(object input)
+    {
+        var formatter = Formatters.FirstOrDefault(a => a.Key(input.GetType()));
+        if (formatter.Value is not null)
+            return formatter.Value(input);
+        return null;
     }
 }
 

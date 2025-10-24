@@ -10,7 +10,15 @@ public class Spike
     {
         var result = Please.AllowMe()
             .ToReplace<int>(a => "REPLACED")
-            .To<Models.Coach>(a => a.Ignore(a => a.Skills))
+            .IntroduceThis(42, false);
+        Assert.Equal("REPLACED", result);
+    }
+
+    [Fact]
+    public void Introduce_replace_all_ints()
+    {
+        var result = Please.AllowMe()
+            .ToReplaceAll(t => t == typeof(int), a => "REPLACED")
             .IntroduceThis(42, false);
         Assert.Equal("REPLACED", result);
     }

@@ -22,6 +22,9 @@ public class ManOfWealthAndTaste
     public ManOfWealthAndTaste ToReplace<T>(Func<T, string> formatter)
         => Chain.It(() => puzzles.Registry.Register(formatter), this);
 
+    public ManOfWealthAndTaste ToReplaceAll(Func<Type, bool> predicate, Func<object, string> formatter)
+        => Chain.It(() => puzzles.RegisterFormatter(predicate, formatter), this);
+
     public ManOfWealthAndTaste To<T>(Action<Troubadour<T>> customize)
         => Chain.It(() => customize(new Troubadour<T>(this, puzzles)), this);
 
@@ -36,7 +39,8 @@ public class ManOfWealthAndTaste
                 TypeRegistry = puzzles.TypeRegistry,
                 WithClass = puzzles.WithClass,
                 SelfReferencingRegistry = puzzles.SelfReferencingRegistry,
-                InlinedTypes = puzzles.InlinedTypes
+                InlinedTypes = puzzles.InlinedTypes,
+                Formatters = puzzles.Formatters
             }))
             .SetArtery(TheString.Catcher())
             .Pulse(obj!)
