@@ -1,7 +1,6 @@
 
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace QuickPulse.Show.Bolts;
 
@@ -27,7 +26,8 @@ public record Ministers
 
     public bool Inlined { get; init; } = false;
     public HashSet<Type> InlinedTypes { get; init; } = [];
-    public bool NeedsInlining(object input) => InlinedTypes.Contains(input.GetType());
+    public bool NeedsInlining(object input) => InlinedTypes.Contains(input.GetType())
+        || (input as System.Collections.IEnumerable)?.Count() == 0;
 
     public int Level { get; init; } = 0;
     public Ministers IncreaseLevel() => this with { Level = Level + 1 };

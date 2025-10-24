@@ -67,13 +67,17 @@ public static class The
         from _ in Pulse.Scoped<Ministers>(a => a.PrimeStartOfCollection(), inner)
         select input;
 
+    private readonly static Flow<IEnumerable> BracketedInterspersed =
+        from input in Pulse.Start<IEnumerable>()
+        from _ in Indent.Then(SquareBracketed(Pulse.ToFlow(Interspersed, input)))
+        select input;
+
     private readonly static Flow<IEnumerable> Collection =
         from input in Pulse.Start<IEnumerable>()
-        from ministers in Pulse.Draw<Ministers>()
-        let needsInlining = ministers.NeedsInlining(input) || input.Count() == 0
-        from _ in needsInlining
-            ? Pulse.Scoped<Ministers>(a => a with { Inlined = true }, Indent.Then(SquareBracketed(Pulse.ToFlow(Interspersed, input))))
-            : Indent.Then(SquareBracketed(Pulse.ToFlow(Interspersed, input)))
+        from needsInlining in Pulse.Draw<Ministers, bool>(a => a.NeedsInlining(input))
+        from _ in Pulse.ScopedIf<Ministers>(
+            needsInlining, a => a with { Inlined = true }, BracketedInterspersed.Dissipate())
+        from __ in Pulse.When(!needsInlining, BracketedInterspersed.Dissipate())
         select input;
 
     private readonly static Flow<(object, object)> LabeledValue =
@@ -120,16 +124,14 @@ public static class The
 
     private readonly static Flow<object> ObjectFinal =
         from input in Pulse.Start<object>()
-        from ministers in Pulse.Draw<Ministers>()
-        let formatter = ministers.GetObjectFormatFunction(input)
+        from formatter in Pulse.Draw<Ministers, Func<object, string>>(a => a.GetObjectFormatFunction(input))
         from _ in Pulse.TraceIf(formatter != null, () => formatter(input))
         from __ in Pulse.ToFlowIf(formatter == null, DefaultObject, () => input)
         select input;
 
     private readonly static Flow<object> Object =
         from input in Pulse.Start<object>()
-        from ministers in Pulse.Draw<Ministers>()
-        let needsInlining = ministers.NeedsInlining(input)
+        from needsInlining in Pulse.Draw<Ministers, bool>(a => a.NeedsInlining(input))
         from _ in needsInlining
             ? Indent.Then(Pulse.Scoped<Ministers>(a => a with { Inlined = true }, Pulse.ToFlow(ObjectFinal, input)))
             : Pulse.ToFlow(ObjectFinal, input)
