@@ -3,16 +3,10 @@ using System.Reflection;
 
 namespace QuickPulse.Show.Bolts;
 
-public class Troubadour<T>
+public class Troubadour<T>(ManOfWealthAndTaste manOfWealthAndTaste, Puzzles puzzles)
 {
-    private readonly ManOfWealthAndTaste manOfWealthAndTaste;
-    private readonly Puzzles puzzles;
-
-    public Troubadour(ManOfWealthAndTaste manOfWealthAndTaste, Puzzles puzzles)
-    {
-        this.manOfWealthAndTaste = manOfWealthAndTaste;
-        this.puzzles = puzzles;
-    }
+    private readonly ManOfWealthAndTaste manOfWealthAndTaste = manOfWealthAndTaste;
+    private readonly Puzzles puzzles = puzzles;
 
     public ManOfWealthAndTaste Use(Func<T, string> formatter)
     {

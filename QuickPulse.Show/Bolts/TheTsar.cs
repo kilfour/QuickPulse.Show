@@ -6,6 +6,13 @@ public static class The
 {
     private const string CycleMarker = "<cycle>";
 
+    private readonly static Flow<object> Cycle =
+        from input in Pulse.Start<object>()
+        from ministers in Pulse.Draw<Ministers>()
+        let formatFunction = ministers.GetReferencingFormatFunction(input)
+        from _ in formatFunction is null ? Indented(CycleMarker) : Indented(formatFunction(input))
+        select input;
+
     private readonly static Flow<Unit> Spacing =
         from ministers in Pulse.Draw<Ministers>()
         from _ in ministers.PrettyPrint ? Pulse.Trace(Environment.NewLine) : Pulse.Trace(" ")
@@ -128,7 +135,7 @@ public static class The
             (() => input == null,                 /**/ () => Null),
             (() => Is.Primitive(input, registry), /**/ () => Pulse.ToFlow(Primitive, input)),
             (() => Is.ObjectProperty(input),      /**/ () => Pulse.ToFlow(Property, (ObjectProperty)input)),
-            (() => ministers.IsOnPath(input),     /**/ () => Indented(CycleMarker)),
+            (() => ministers.IsOnPath(input),     /**/ () => Pulse.ToFlow(Cycle, input)),
             (() => Is.Dictionary(input),          /**/ () => Guarded(input, Pulse.ToFlow(Dictionary, (IDictionary)input))),
             (() => Is.KeyValuePair(input),        /**/ () => Guarded(input, Pulse.ToFlow(KeyValuePair, input))),
             (() => Is.Collection(input),          /**/ () => Guarded(input, Pulse.ToFlow(Collection, (IEnumerable)input))),

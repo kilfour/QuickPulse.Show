@@ -20,7 +20,6 @@ public class Spike
         var result = Please.AllowMe()
             .To<Models.Coach>(a => a.Ignore(a => a.Skills))
             .IntroduceThis(new Models.Coach("name", "email"), false);
-
         Assert.Equal("{ Name: \"name\", Email: \"email\" }", result);
     }
 
@@ -30,7 +29,6 @@ public class Spike
         var result = Please.AllowMe()
             .To<Models.Coach>(a => a.Use(a => "REPLACED"))
             .IntroduceThis(new Models.Coach("name", "email"), false);
-
         Assert.Equal("REPLACED", result);
     }
 
@@ -40,7 +38,6 @@ public class Spike
         var result = Please.AllowMe()
             .To<Models.Coach>(a => a.Use(a => $"new Models.Coach(\"{a.Name}\", \"{a.Email}\")"))
             .IntroduceThis(new Models.Coach("name", "email"), false);
-
         Assert.Equal("new Models.Coach(\"name\", \"email\")", result);
     }
 
@@ -50,7 +47,6 @@ public class Spike
         var result = Please.AllowMe()
             .ToAddSomeClass()
             .IntroduceThis(new Models.Person("Alice", 30), false);
-
         Assert.Equal("Person { Name: \"Alice\", Age: 30 }", result);
     }
 
@@ -62,5 +58,15 @@ public class Spike
             .IntroduceThis(new List<Models.Person>([new Models.Person("a", 1), new Models.Person("b", 2)]), false);
         Assert.Equal("[ Person { Name: \"a\", Age: 1 }, Person { Name: \"b\", Age: 2 } ]", result);
     }
-}
 
+    [Fact]
+    public void Introduce_a_cyclic_format()
+    {
+        var node = new Models.Node("root");
+        node.Next = node;
+        var result = Please.AllowMe()
+            .ToSelfReference<Models.Node>(a => $"<cycle: {typeof(Models.Node).Name} {{ Name = \"{a.Name}\" }}>")
+            .IntroduceThis(node, false);
+        Assert.Equal("{ Name: \"root\", Next: <cycle: Node { Name = \"root\" }> }", result);
+    }
+}

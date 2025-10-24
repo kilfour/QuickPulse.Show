@@ -8,7 +8,7 @@ public class Puzzles
 
     public PrimitivesRegistry Registry { get; } = new PrimitivesRegistry();
 
-    public Dictionary<Type, Func<object, string>> TypeRegistry { get; } = new();
+    public Dictionary<Type, Func<object, string>> TypeRegistry { get; } = [];
 
     public void RegisterTypeFormatter<T>(Func<T, string> formatter)
     {
@@ -30,5 +30,12 @@ public class Puzzles
         if (!PropertiesToIgnore.ContainsKey(typeof(T)))
             PropertiesToIgnore[typeof(T)] = [];
         PropertiesToIgnore[typeof(T)].Add(prop);
+    }
+
+    public Dictionary<Type, Func<object, string>> SelfReferencingRegistry { get; } = [];
+
+    public void SelfReferencingFormatter<T>(Func<T, string> formatter)
+    {
+        SelfReferencingRegistry[typeof(T)] = a => formatter((T)a);
     }
 }

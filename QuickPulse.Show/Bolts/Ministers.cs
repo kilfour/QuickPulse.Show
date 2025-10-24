@@ -74,6 +74,12 @@ public record Ministers
     }
 
     public bool WithClass { get; set; } = false;
+    public Dictionary<Type, Func<object, string>> SelfReferencingRegistry { get; init; } = [];
+    public Func<object, string> GetReferencingFormatFunction(object obj)
+    {
+        if (!SelfReferencingRegistry.ContainsKey(obj.GetType())) return null!;
+        return SelfReferencingRegistry[obj.GetType()];
+    }
 }
 
 
