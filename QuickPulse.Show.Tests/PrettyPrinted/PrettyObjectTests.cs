@@ -70,4 +70,17 @@ public class PrettyObjectTests
         Assert.Equal("}", reader.NextLine());
         Assert.True(reader.EndOfContent());
     }
+
+    [Fact]
+    public void Introduce_Cycle()
+    {
+        var node = new Models.Node("root");
+        node.Next = node;
+        var result = Introduce.This(node, true);
+        var reader = LinesReader.FromText(result);
+        Assert.Equal("{", reader.NextLine());
+        Assert.Equal("    Name: \"root\",", reader.NextLine());
+        Assert.Equal("    Next: <cycle>", reader.NextLine());
+        Assert.Equal("}", reader.NextLine());
+    }
 }

@@ -128,7 +128,7 @@ public static class The
             (() => input == null,                 /**/ () => Null),
             (() => Is.Primitive(input, registry), /**/ () => Pulse.ToFlow(Primitive, input)),
             (() => Is.ObjectProperty(input),      /**/ () => Pulse.ToFlow(Property, (ObjectProperty)input)),
-            (() => ministers.IsOnPath(input),     /**/ () => Pulse.Trace(CycleMarker)),
+            (() => ministers.IsOnPath(input),     /**/ () => Indented(CycleMarker)),
             (() => Is.Dictionary(input),          /**/ () => Guarded(input, Pulse.ToFlow(Dictionary, (IDictionary)input))),
             (() => Is.KeyValuePair(input),        /**/ () => Guarded(input, Pulse.ToFlow(KeyValuePair, input))),
             (() => Is.Collection(input),          /**/ () => Guarded(input, Pulse.ToFlow(Collection, (IEnumerable)input))),

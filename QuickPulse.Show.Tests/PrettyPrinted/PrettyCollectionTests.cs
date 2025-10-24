@@ -245,4 +245,23 @@ public class PrettyCollectionTests
         Assert.True(reader.EndOfContent());
     }
 
+    public class SelfReferenceList
+    {
+        public List<SelfReferenceList> List = [];
+    }
+
+    [Fact]
+    public void Introduce_Cycle()
+    {
+        var thing = new SelfReferenceList();
+        thing.List.Add(thing);
+        var result = Introduce.This(thing, true);
+        var reader = LinesReader.FromText(result);
+        Assert.Equal("{", reader.NextLine());
+        Assert.Equal("    List: [", reader.NextLine());
+        Assert.Equal("        <cycle>", reader.NextLine());
+        Assert.Equal("    ]", reader.NextLine());
+        Assert.Equal("}", reader.NextLine());
+    }
+
 }
