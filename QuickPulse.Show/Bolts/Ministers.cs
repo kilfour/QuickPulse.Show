@@ -89,14 +89,14 @@ public record Ministers
         return SelfReferencingRegistry[obj.GetType()];
     }
 
-    public Dictionary<Func<Type, bool>, Func<object, string>> Formatters { get; init; } = [];
+    public Dictionary<Func<Type, bool>, Func<object, object>> Formatters { get; init; } = [];
 
     public bool HasFormatter(object input)
     {
         return Formatters.Any(a => a.Key(input.GetType()));
     }
 
-    public string? GetFormattedString(object input)
+    public object? GetFormattedObject(object input)
     {
         var formatter = Formatters.FirstOrDefault(a => a.Key(input.GetType()));
         if (formatter.Value is not null)

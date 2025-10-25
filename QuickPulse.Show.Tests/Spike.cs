@@ -20,7 +20,7 @@ public class Spike
         var result = Please.AllowMe()
             .ToReplaceAll(t => t == typeof(int), a => "REPLACED")
             .IntroduceThis(42, false);
-        Assert.Equal("REPLACED", result);
+        Assert.Equal("\"REPLACED\"", result);
     }
 
     [Fact]
@@ -112,6 +112,19 @@ public class Spike
         var reader = LinesReader.FromText(result);
         Assert.Equal("[", reader.NextLine());
         Assert.Equal("    { Name: \"1\", Age: 1 }", reader.NextLine());
+        Assert.Equal("]", reader.NextLine());
+        Assert.True(reader.EndOfContent());
+    }
+
+    [Fact]
+    public void Introduce_substitution_with_property()
+    {
+        var result = Please.AllowMe()
+            .ToSubstituteWithPropertyNamed<string>("Name")
+            .IntroduceThis(new List<Models.Person> { new("1", 1) });
+        var reader = LinesReader.FromText(result);
+        Assert.Equal("[", reader.NextLine());
+        Assert.Equal("    \"1\"", reader.NextLine());
         Assert.Equal("]", reader.NextLine());
         Assert.True(reader.EndOfContent());
     }

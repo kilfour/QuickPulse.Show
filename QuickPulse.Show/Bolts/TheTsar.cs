@@ -146,7 +146,7 @@ public static class The
         let registry = ministers.Registry
         from _ in Pulse.FirstOf(
             (() => input == null,                 /**/ () => Null),
-            (() => ministers.HasFormatter(input), /**/ () => Pulse.Trace(ministers.GetFormattedString(input)!)),
+            (() => ministers.HasFormatter(input), /**/ () => Pulse.ToFlow(Anastasia!, ministers.GetFormattedObject(input)!)),
             (() => Is.Primitive(input, registry), /**/ () => Pulse.ToFlow(Primitive, input)),
             (() => Is.ObjectProperty(input),      /**/ () => Pulse.ToFlow(Property, (ObjectProperty)input)),
             (() => ministers.IsOnPath(input),     /**/ () => Pulse.ToFlow(Cycle, input)),

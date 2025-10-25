@@ -46,8 +46,8 @@ public class Puzzles
         InlinedTypes.Add(type);
     }
 
-    public Dictionary<Func<Type, bool>, Func<object, string>> Formatters { get; } = [];
-    public void RegisterFormatter(Func<Type, bool> predicate, Func<object, string> formatter)
+    public Dictionary<Func<Type, bool>, Func<object, object>> Formatters { get; } = [];
+    public void RegisterFormatter(Func<Type, bool> predicate, Func<object, object> formatter)
     {
         Formatters[predicate] = formatter;
     }

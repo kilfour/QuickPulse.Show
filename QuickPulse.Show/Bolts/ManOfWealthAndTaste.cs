@@ -1,5 +1,6 @@
 using QuickPulse.Arteries;
 using QuickPulse.Instruments;
+using QuickPulse.Show.Reflects;
 
 namespace QuickPulse.Show.Bolts;
 
@@ -24,6 +25,8 @@ public class ManOfWealthAndTaste
 
     public ManOfWealthAndTaste ToReplaceAll(Func<Type, bool> predicate, Func<object, string> formatter)
         => Chain.It(() => puzzles.RegisterFormatter(predicate, formatter), this);
+    public ManOfWealthAndTaste ToSubstituteWithPropertyNamed<T>(string propertyName)
+        => Chain.It(() => puzzles.RegisterFormatter(a => a.HasPropertyNamed<T>(propertyName), a => a.GetValueFor(propertyName)), this);
 
     public ManOfWealthAndTaste To<T>(Action<Troubadour<T>> customize)
         => Chain.It(() => customize(new Troubadour<T>(this, puzzles)), this);
