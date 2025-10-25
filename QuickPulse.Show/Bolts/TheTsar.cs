@@ -13,32 +13,32 @@ public static class The
         from _ in formatFunction is null ? Indented(CycleMarker) : Indented(formatFunction(input))
         select input;
 
-    private readonly static Flow<Unit> Spacing =
+    private readonly static Flow<Flow> Spacing =
         from ministers in Pulse.Draw<Ministers>()
         from _ in ministers.PrettyPrint && !ministers.Inlined ? Pulse.Trace(Environment.NewLine) : Pulse.Trace(" ")
-        select Unit.Instance;
+        select Flow.Continue;
 
-    private readonly static Flow<Unit> Indent =
+    private readonly static Flow<Flow> Indent =
         Pulse.TraceIf<Ministers>(
             a => a.DoINeedToIndentThis(),
             a => new string(' ', a.Level * 4));
 
-    private static Flow<Unit> Indented(string str) => Indent.Then(Pulse.Trace(str));
+    private static Flow<Flow> Indented(string str) => Indent.Then(Pulse.Trace(str));
 
-    private readonly static Flow<Unit> Separator = Pulse.Trace(",");
-    private readonly static Flow<Unit> Colon = Pulse.Trace(": ");
-    private readonly static Flow<Unit> Null = Indented("null");
+    private readonly static Flow<Flow> Separator = Pulse.Trace(",");
+    private readonly static Flow<Flow> Colon = Pulse.Trace(": ");
+    private readonly static Flow<Flow> Null = Indented("null");
 
-    private static Flow<Unit> Enclosed(string left, string right, Flow<Unit> innerFlow) =>
+    private static Flow<Flow> Enclosed(string left, string right, Flow<Flow> innerFlow) =>
         from leftBracket in Pulse.Trace(left)
         from _ in Pulse.Scoped<Ministers>(a => a.IncreaseLevel().EnableIndent(), innerFlow)
         from spacing in Spacing
         from __ in Pulse.Scoped<Ministers>(a => a.EnableIndent(), Indented(right))
-        select Unit.Instance;
+        select Flow.Continue;
 
-    private static Flow<Unit> Braced(Flow<Unit> innerFlow) => Enclosed("{", "}", innerFlow);
-    private static Flow<Unit> Bracketed(Flow<Unit> innerFlow) => Enclosed("(", ")", innerFlow);
-    private static Flow<Unit> SquareBracketed(Flow<Unit> innerFlow) => Enclosed("[", "]", innerFlow);
+    private static Flow<Flow> Braced(Flow<Flow> innerFlow) => Enclosed("{", "}", innerFlow);
+    private static Flow<Flow> Bracketed(Flow<Flow> innerFlow) => Enclosed("(", ")", innerFlow);
+    private static Flow<Flow> SquareBracketed(Flow<Flow> innerFlow) => Enclosed("[", "]", innerFlow);
 
     private readonly static Flow<object> Fallback =
         from input in Pulse.Start<object?>()
@@ -135,10 +135,10 @@ public static class The
             : flow
         select input;
 
-    private static Flow<Unit> Guarded(object node, Flow<Unit> inner) =>
+    private static Flow<Flow> Guarded(object node, Flow<Flow> inner) =>
         from _ in Pulse.Scoped<Ministers>(m => m.Enter(node), inner)
         from __ in Pulse.Scoped<Ministers>(m => m.Exit(node), Pulse.NoOp())
-        select Unit.Instance;
+        select Flow.Continue;
 
     private readonly static Flow<object> Anastasia =
         from input in Pulse.Start<object>()
