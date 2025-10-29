@@ -44,9 +44,9 @@ public class ManOfWealthAndTaste
                 SelfReferencingRegistry = puzzles.SelfReferencingRegistry,
                 InlinedTypes = puzzles.InlinedTypes,
                 Formatters = puzzles.Formatters
-            }))
-            .SetArtery(TheString.Catcher())
+            }, prettyPrint))
+            .SetArtery(Text.Capture())
             .Pulse(obj!)
-            .GetArtery<Holden>()
-            .Whispers();
+            .GetArtery<StringSink>()
+            .Content();
 }

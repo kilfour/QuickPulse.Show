@@ -56,15 +56,14 @@ public static class The
 
     private readonly static Flow<object> InterspersedPrimed =
         from input in Pulse.Start<object>()
-        from seperator in Pulse.When<Ministers>(a => a.StartOfCollection.Restricted(), Separator)
-        let element = Pulse.ToFlow(Anastasia!, input)
-        from _ in Spacing.Then(element)
+        from seperator in Pulse.When<Joiner>(a => a.NeedsSeparator(), Separator)
+        from _ in Spacing.Then(Pulse.ToFlow(Anastasia!, input))
         select input;
 
     private readonly static Flow<IEnumerable> Interspersed =
         from input in Pulse.Start<IEnumerable>()
-        let inner = Pulse.ToFlow(InterspersedPrimed, input.Cast<object>())
-        from _ in Pulse.Scoped<Ministers>(a => a.PrimeStartOfCollection(), inner)
+        from _ in Pulse.Scoped<Joiner>(a => a.Prime(),
+            Pulse.ToFlow(InterspersedPrimed, input.Cast<object>()))
         select input;
 
     private readonly static Flow<IEnumerable> BracketedInterspersed =
@@ -81,14 +80,14 @@ public static class The
         from input in Pulse.Start<(object Label, object Value)>()
         from label in Pulse.ToFlow(Anastasia!, input.Label)
         from colon in Colon
-        let value = Pulse.ToFlow(Anastasia!, input.Value)
-        from _ in Pulse.Scoped<Ministers>(a => a.DisableIndent(), value)
+        from _ in Pulse.Scoped<Ministers>(a => a.DisableIndent(),
+            Pulse.ToFlow(Anastasia!, input.Value))
         select input;
 
     private readonly static Flow<object> KeyValuePair =
         from input in Pulse.Start<object>()
-        let keyValue = Pulse.ToFlow(LabeledValue, Get.KeyValueAsTuple(input))
-        from _ in Pulse.Scoped<Ministers>(a => a.EnableIndent(), keyValue)
+        from _ in Pulse.Scoped<Ministers>(a => a.EnableIndent(),
+            Pulse.ToFlow(LabeledValue, Get.KeyValueAsTuple(input)))
         select input;
 
     private readonly static Flow<IDictionary> Dictionary =
@@ -100,8 +99,8 @@ public static class The
         from input in Pulse.Start<ObjectProperty>()
         from key in Indent.Then(Pulse.Trace(input.Name))
         from colon in Colon
-        let value = Pulse.ToFlow(Anastasia!, input.Value)
-        from _ in Pulse.Scoped<Ministers>(a => a.DisableIndent(), value)
+        from _ in Pulse.Scoped<Ministers>(a => a.DisableIndent(),
+            Pulse.ToFlow(Anastasia!, input.Value))
         select input;
 
     private readonly static Flow<object> Tuple =
@@ -119,48 +118,52 @@ public static class The
         from _2 in Indent.Then(Braced(Pulse.ToFlow(Interspersed, items)))
         select input;
 
-    private readonly static Flow<object> ObjectFinal =
+    private readonly static Flow<object> Object =
         from input in Pulse.Start<object>()
         from formatter in Pulse.Draw<Ministers, Func<object, string>>(a => a.GetObjectFormatFunction(input))
         from _ in Pulse.TraceIf(formatter != null, () => formatter(input))
         from __ in Pulse.ToFlowIf(formatter == null, DefaultObject, () => input)
         select input;
 
-    private readonly static Flow<object> Object =
+    private readonly static Flow<object> MaybeInlinedObject =
         from input in Pulse.Start<object>()
         from needsInlining in Pulse.Draw<Ministers, bool>(a => a.NeedsInlining(input))
-        let flow = Pulse.ToFlow(ObjectFinal, input)
-        from _ in needsInlining
-            ? Indent.Then(Pulse.Scoped<Ministers>(a => a.SetInlineFlag(input), flow))
-            : flow
+        from _ in Pulse.FirstOf(
+            (() => needsInlining, () => Indent.Then(Pulse.Scoped<Ministers>(
+                a => a.SetInlineFlag(input), Pulse.ToFlow(Object, input)))),
+            (() => true, () => Pulse.ToFlow(Object, input)))
         select input;
 
     private static Flow<Flow> Guarded(object node, Flow<Flow> inner) =>
-        from _ in Pulse.Scoped<Ministers>(m => m.Enter(node), inner)
-        from __ in Pulse.Scoped<Ministers>(m => m.Exit(node), Pulse.NoOp())
+        from _ in Pulse.Scoped<CycleGuard>(m => m.Enter(node), inner)
+        from __ in Pulse.Scoped<CycleGuard>(m => m.Exit(node), Pulse.NoOp())
         select Flow.Continue;
 
     private readonly static Flow<object> Anastasia =
         from input in Pulse.Start<object>()
         from ministers in Pulse.Draw<Ministers>()
+        from cycleGuard in Pulse.Draw<CycleGuard>()
         let registry = ministers.Registry
         from _ in Pulse.FirstOf(
             (() => input == null,                 /**/ () => Null),
             (() => ministers.HasFormatter(input), /**/ () => Pulse.ToFlow(Anastasia!, ministers.GetFormattedObject(input)!)),
             (() => Is.Primitive(input, registry), /**/ () => Pulse.ToFlow(Primitive, input)),
             (() => Is.ObjectProperty(input),      /**/ () => Pulse.ToFlow(Property, (ObjectProperty)input)),
-            (() => ministers.IsOnPath(input),     /**/ () => Pulse.ToFlow(Cycle, input)),
+            (() => cycleGuard.IsOnPath(input),     /**/ () => Pulse.ToFlow(Cycle, input)),
             (() => Is.Dictionary(input),          /**/ () => Guarded(input, Pulse.ToFlow(Dictionary, (IDictionary)input))),
             (() => Is.KeyValuePair(input),        /**/ () => Guarded(input, Pulse.ToFlow(KeyValuePair, input))),
             (() => Is.Collection(input),          /**/ () => Guarded(input, Pulse.ToFlow(Collection, (IEnumerable)input))),
             (() => Is.Tuple(input),               /**/ () => Guarded(input, Pulse.ToFlow(Tuple, input))),
-            (() => Is.Object(input),              /**/ () => Guarded(input, Pulse.ToFlow(Object, input))),
+            (() => Is.Object(input),              /**/ () => Guarded(input, Pulse.ToFlow(MaybeInlinedObject, input))),
             (() => true,                          /**/ () => Pulse.ToFlow(Fallback, input)))
         select input;
 
-    public static Flow<object> Tsar(Ministers ministers) =>
+    public static Flow<object> Tsar(Ministers ministers, bool prettyPrint) =>
         from input in Pulse.Start<object>()
-        from _ in Pulse.Prime(() => ministers)
+        from _1 in Pulse.Prime(() => ministers)
+        from _2 in Pulse.Prime(() => new Joiner())
+        from _3 in Pulse.Prime(() => new CycleGuard())
+        from _4 in Pulse.Prime(() => new IndentControl(prettyPrint))
         from __ in Pulse.ToFlow(Anastasia, input)
         select input;
 }

@@ -1,3 +1,4 @@
+using Microsoft.VisualBasic;
 using QuickPulse.Arteries;
 using QuickPulse.Show.Bolts;
 
@@ -7,16 +8,16 @@ namespace QuickPulse.Show;
 public static class Introduce
 {
     public static string This(object obj, bool prettyPrint = true) =>
-        Signal.From(The.Tsar(new Ministers() { PrettyPrint = prettyPrint }))
-            .SetArtery(TheString.Catcher())
+        Signal.From(The.Tsar(new Ministers() { PrettyPrint = prettyPrint }, prettyPrint))
+            .SetArtery(Text.Capture())
             .Pulse(obj)
-            .GetArtery<Holden>()
-            .Whispers();
+            .GetArtery<StringSink>()
+            .Content();
 
     public static T PulseToLog<T>(this T item, string filename = null!)
     {
         Signal.From<string>(a => Pulse.Trace(a))
-            .SetArtery(TheLedger.Records(filename))
+            .SetArtery(FileLog.Append(filename))
             .Pulse(This(item!));
         return item;
     }
