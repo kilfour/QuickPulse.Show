@@ -35,7 +35,6 @@ public class ManOfWealthAndTaste
         => Signal.From(The.Tsar(
             new Ministers()
             {
-                PrettyPrint = prettyPrint,
                 FieldsToIgnore = puzzles.FieldsToIgnore,
                 PropertiesToIgnore = puzzles.PropertiesToIgnore,
                 Registry = puzzles.Registry,

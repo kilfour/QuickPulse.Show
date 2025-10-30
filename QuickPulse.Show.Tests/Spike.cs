@@ -95,6 +95,15 @@ public class Spike
     }
 
     [Fact]
+    public void Introduce_inlining_list()
+    {
+        var result = Please.AllowMe()
+            .ToInline<List<int>>()
+            .IntroduceThis(new List<int> { 1, 2 });
+        Assert.Equal("[ 1, 2 ]", result);
+    }
+
+    [Fact]
     public void Introduce_inlining_object()
     {
         var result = Please.AllowMe()
