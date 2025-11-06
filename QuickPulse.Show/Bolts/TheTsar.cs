@@ -114,7 +114,7 @@ public static class The
         from input in Pulse.Start<object>()
         from fields in Pulse.Draw<Ministers, IEnumerable<object>>(a => a.FieldValues(input))
         from indent in EmitIndent
-        from tuple in Bracketed(Pulse.ToFlow(Interspersed, fields))
+        from tuple in Bracketed(Pulse.ToFlow(Interspersed, (IEnumerable)fields))
         select input;
 
     private readonly static Flow<object> DefaultObject =

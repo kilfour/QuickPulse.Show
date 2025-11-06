@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.1.8</Version>
+    <Version>0.1.9</Version>
     <Authors>Kilfour</Authors>
     <PackageId>QuickPulse.Show</PackageId>
     <Description>Please allow `this` to introduce oneself, hope you guess my type.</Description>
@@ -20,11 +20,11 @@
   </ItemGroup>
   
   <ItemGroup>
-    <!-- <PackageReference Include="QuickPulse" Version="0.3.0" /> -->
+    <PackageReference Include="QuickPulse" Version="0.3.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\QuickPulse\QuickPulse\QuickPulse.csproj" />
+    <!-- <ProjectReference Include="..\..\QuickPulse\QuickPulse\QuickPulse.csproj" /> -->
   </ItemGroup>
   
 </Project>
