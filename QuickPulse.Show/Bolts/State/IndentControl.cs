@@ -7,7 +7,15 @@ public record IndentControl(bool PrettyPrint)
     private bool needsIndent = false;
     public IndentControl EnableIndent() => this with { needsIndent = true };
     public IndentControl DisableIndent() => this with { needsIndent = false };
-    public bool NeedsIndent() => PrettyPrint && needsIndent;
+    public bool NeedsIndent() => PrettyPrint && needsIndent && !needsInlining;
+    private bool needsInlining = false;
+    public bool NeedsInlining => needsInlining;
     public IndentControl Inline(bool needsInlining)
-        => this with { PrettyPrint = PrettyPrint && !needsInlining };
+        => this with { needsInlining = needsInlining };
+
+    private bool onNewLine = false;
+    public IndentControl OnNewLine(bool onNewLine)
+        => this with { onNewLine = onNewLine };
+    public bool IsNewLine()
+        => onNewLine;
 }

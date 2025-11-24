@@ -13,15 +13,23 @@ public static class The
         from _ in formatFunction is null ? Indented(CycleMarker) : Indented(formatFunction(input))
         select input;
 
+    private readonly static Flow<Flow> NewLine =
+        Pulse.Trace(Environment.NewLine).Then(Pulse.Manipulate<IndentControl>(a => a.OnNewLine(true)).Dissipate());
+
+    private readonly static Flow<Flow> Space =
+        Pulse.Trace(" ").Then(Pulse.Manipulate<IndentControl>(a => a.OnNewLine(false)).Dissipate());
+
     private readonly static Flow<Flow> Spacing =
-        from prettyPrint in Pulse.Draw<IndentControl, bool>(a => a.PrettyPrint)
-        from _ in prettyPrint ? Pulse.Trace(Environment.NewLine) : Pulse.Trace(" ")
+        from prettyPrint in Pulse.Draw<IndentControl, bool>(a => a.PrettyPrint && !a.NeedsInlining)
+        from _ in prettyPrint ? NewLine : Space
         select Flow.Continue;
+
+    private static string Indent(int level) => new(' ', level * 4);
 
     private readonly static Flow<Flow> EmitIndent =
         Pulse.TraceIf<IndentControl>(
             a => a.NeedsIndent(),
-            a => new string(' ', a.Level * 4));
+            a => Indent(a.Level));
 
     private static Flow<Flow> Indented(string str) => EmitIndent.Then(Pulse.Trace(str));
 
@@ -73,6 +81,7 @@ public static class The
     private readonly static Flow<IEnumerable> Collection =
         from input in Pulse.Start<IEnumerable>()
         from needsInlining in Pulse.Draw<Ministers, bool>(a => a.NeedsInlining(input))
+        from indent in Pulse.TraceIf<IndentControl>(a => needsInlining && a.IsNewLine(), a => Indent(a.Level))
         from _ in Pulse.Scoped<IndentControl>(
             a => a.Inline(needsInlining),
             BracketedInterspersed.Dissipate())
@@ -81,6 +90,7 @@ public static class The
     private readonly static Flow<(object, object)> LabeledValue =
         from input in Pulse.Start<(object Label, object Value)>()
         from label in Pulse.ToFlow(Anastasia!, input.Label)
+        from _ in Pulse.Manipulate<IndentControl>(a => a.OnNewLine(false))
         from colon in Colon
         from value in Pulse.Scoped<IndentControl>(
             a => a.DisableIndent(),
@@ -105,6 +115,7 @@ public static class The
     private readonly static Flow<ObjectProperty> Property =
         from input in Pulse.Start<ObjectProperty>()
         from key in EmitIndent.Then(Pulse.Trace(input.Name))
+        from disableNewLine in Pulse.Manipulate<IndentControl>(a => a.OnNewLine(false))
         from colon in Colon
         from _ in Pulse.Scoped<IndentControl>(a => a.DisableIndent(),
             Pulse.ToFlow(Anastasia!, input.Value))

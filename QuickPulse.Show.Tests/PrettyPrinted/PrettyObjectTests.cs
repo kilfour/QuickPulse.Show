@@ -19,21 +19,6 @@ public class PrettyObjectTests
     }
 
     [Fact]
-    public void JsonSerializer_SimpleObject()
-    {
-        var result =
-            JsonSerializer.Serialize(new Models.Person("Alice", 30),
-                new JsonSerializerOptions { WriteIndented = true });
-
-        var reader = LinesReader.FromText(result);
-        Assert.Equal("{", reader.NextLine());
-        Assert.Equal("  \"Name\": \"Alice\",", reader.NextLine());
-        Assert.Equal("  \"Age\": 30", reader.NextLine());
-        Assert.Equal("}", reader.NextLine());
-        Assert.True(reader.EndOfContent());
-    }
-
-    [Fact]
     public void Introduce_EmptyObject()
     {
         var result = Introduce.This(new { });
