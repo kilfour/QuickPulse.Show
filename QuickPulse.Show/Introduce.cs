@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Microsoft.VisualBasic;
 using QuickPulse.Arteries;
 using QuickPulse.Show.Bolts;
@@ -19,6 +20,19 @@ public static class Introduce
         Signal.From<string>(a => Pulse.Trace(a))
             .SetArtery(FileLog.Append(filename))
             .Pulse(This(item!));
+        return item;
+    }
+
+    public static T PulseToQuickLog<T>(
+        this T item,
+        [CallerMemberName] string testName = "",
+        [CallerFilePath] string callerPath = "")
+    {
+        var dir = Path.GetDirectoryName(callerPath)!;
+        var fullPath = Path.Combine(dir, $"{testName}.log");
+        Signal.From<string>(a => Pulse.Trace(a))
+           .SetArtery(FileLog.Append(fullPath))
+           .Pulse(This(item!));
         return item;
     }
 }
