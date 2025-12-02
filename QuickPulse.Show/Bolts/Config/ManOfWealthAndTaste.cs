@@ -8,6 +8,9 @@ public class ManOfWealthAndTaste
 {
     private readonly Puzzles puzzles = new();
 
+    public ManOfWealthAndTaste ToPrettyPrint()
+        => Chain.It(() => puzzles.PrettyPrint = true, this);
+
     public ManOfWealthAndTaste ToAddSomeClass()
         => Chain.It(() => puzzles.WithClass = true, this);
 
@@ -31,7 +34,7 @@ public class ManOfWealthAndTaste
     public ManOfWealthAndTaste To<T>(Action<Troubadour<T>> customize)
         => Chain.It(() => customize(new Troubadour<T>(this, puzzles)), this);
 
-    public string IntroduceThis<T>(T obj, bool prettyPrint = true)
+    public string IntroduceThis<T>(T obj)
         => Signal.From(The.Tsar(
             new Ministers()
             {
@@ -43,9 +46,10 @@ public class ManOfWealthAndTaste
                 SelfReferencingRegistry = puzzles.SelfReferencingRegistry,
                 InlinedTypes = puzzles.InlinedTypes,
                 Formatters = puzzles.Formatters
-            }, prettyPrint))
+            }, puzzles.PrettyPrint))
             .SetArtery(Text.Capture())
             .Pulse(obj!)
             .GetArtery<StringSink>()
             .Content();
+
 }

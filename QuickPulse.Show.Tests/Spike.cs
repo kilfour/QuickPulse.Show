@@ -10,7 +10,7 @@ public class Spike
     {
         var result = Please.AllowMe()
             .ToReplace<int>(a => "REPLACED")
-            .IntroduceThis(42, false);
+            .IntroduceThis(42);
         Assert.Equal("REPLACED", result);
     }
 
@@ -19,7 +19,7 @@ public class Spike
     {
         var result = Please.AllowMe()
             .ToReplaceAll(t => t == typeof(int), a => "REPLACED")
-            .IntroduceThis(42, false);
+            .IntroduceThis(42);
         Assert.Equal("\"REPLACED\"", result);
     }
 
@@ -28,7 +28,7 @@ public class Spike
     {
         var result = Please.AllowMe()
             .To<Models.Coach>(a => a.Ignore(a => a.Skills))
-            .IntroduceThis(new Models.Coach("name", "email"), false);
+            .IntroduceThis(new Models.Coach("name", "email"));
         Assert.Equal("{ Name: \"name\", Email: \"email\" }", result);
     }
 
@@ -37,7 +37,7 @@ public class Spike
     {
         var result = Please.AllowMe()
             .To<Models.Coach>(a => a.Use(a => "REPLACED"))
-            .IntroduceThis(new Models.Coach("name", "email"), false);
+            .IntroduceThis(new Models.Coach("name", "email"));
         Assert.Equal("REPLACED", result);
     }
 
@@ -46,7 +46,7 @@ public class Spike
     {
         var result = Please.AllowMe()
             .To<Models.Coach>(a => a.Use(a => $"new Models.Coach(\"{a.Name}\", \"{a.Email}\")"))
-            .IntroduceThis(new Models.Coach("name", "email"), false);
+            .IntroduceThis(new Models.Coach("name", "email"));
         Assert.Equal("new Models.Coach(\"name\", \"email\")", result);
     }
 
@@ -55,7 +55,7 @@ public class Spike
     {
         var result = Please.AllowMe()
             .ToAddSomeClass()
-            .IntroduceThis(new Models.Person("Alice", 30), false);
+            .IntroduceThis(new Models.Person("Alice", 30));
         Assert.Equal("Person { Name: \"Alice\", Age: 30 }", result);
     }
 
@@ -64,7 +64,7 @@ public class Spike
     {
         var result = Please.AllowMe()
             .ToAddSomeClass()
-            .IntroduceThis(new List<Models.Person>([new Models.Person("a", 1), new Models.Person("b", 2)]), false);
+            .IntroduceThis(new List<Models.Person>([new Models.Person("a", 1), new Models.Person("b", 2)]));
         Assert.Equal("[ Person { Name: \"a\", Age: 1 }, Person { Name: \"b\", Age: 2 } ]", result);
     }
 
@@ -75,7 +75,7 @@ public class Spike
         node.Next = node;
         var result = Please.AllowMe()
             .ToSelfReference<Models.Node>(a => $"<cycle: {typeof(Models.Node).Name} {{ Name = \"{a.Name}\" }}>")
-            .IntroduceThis(node, false);
+            .IntroduceThis(node);
         Assert.Equal("{ Name: \"root\", Next: <cycle: Node { Name = \"root\" }> }", result);
     }
 
@@ -83,6 +83,7 @@ public class Spike
     public void Introduce_inlining()
     {
         var result = Please.AllowMe()
+            .ToPrettyPrint()
             .ToInline<HashSet<string>>()
             .IntroduceThis(new Models.Coach("name", "email"));
         var reader = LinesReader.FromText(result);
@@ -116,6 +117,7 @@ public class Spike
     public void Introduce_inlining_object_in_list()
     {
         var result = Please.AllowMe()
+            .ToPrettyPrint()
             .ToInline<Models.Person>()
             .IntroduceThis(new List<Models.Person> { new("1", 1) });
         var reader = LinesReader.FromText(result);
@@ -129,6 +131,7 @@ public class Spike
     public void Introduce_substitution_with_property()
     {
         var result = Please.AllowMe()
+            .ToPrettyPrint()
             .ToSubstituteWithPropertyNamed<string>("Name")
             .IntroduceThis(new List<Models.Person> { new("1", 1) });
         var reader = LinesReader.FromText(result);

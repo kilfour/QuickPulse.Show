@@ -1,9 +1,11 @@
 using System.Reflection;
+using QuickPulse.Show.Bolts.State;
 
 namespace QuickPulse.Show.Bolts;
 
 public class Puzzles
 {
+    public bool PrettyPrint { get; set; } = false;
     public bool WithClass { get; set; } = false;
 
     public PrimitivesRegistry Registry { get; } = new PrimitivesRegistry();

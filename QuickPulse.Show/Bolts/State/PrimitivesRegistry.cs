@@ -1,7 +1,7 @@
 using System.Globalization;
 using WibblyWobbly;
 
-namespace QuickPulse.Show.Bolts;
+namespace QuickPulse.Show.Bolts.State;
 
 public class PrimitivesRegistry
 {

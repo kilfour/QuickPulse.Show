@@ -9,6 +9,7 @@ public class ListInList
     {
         var input = new List<List<int>> { new() { 1, 2 }, new() { 3, 4 } };
         var result = Please.AllowMe()
+            .ToPrettyPrint()
             .ToInline<List<int>>()
             .IntroduceThis(input);
         var reader = LinesReader.FromText(result);
