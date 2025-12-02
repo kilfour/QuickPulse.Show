@@ -18,10 +18,27 @@ public record Ministers
 
 
     public Dictionary<Type, Func<object, string>> TypeRegistry { get; init; } = new();
+    // public Func<object, string> GetObjectFormatFunction(object obj)
+    // {
+    //     if (!TypeRegistry.ContainsKey(obj.GetType())) return null!;
+    //     return TypeRegistry[obj.GetType()];
+    // }
     public Func<object, string> GetObjectFormatFunction(object obj)
     {
-        if (!TypeRegistry.ContainsKey(obj.GetType())) return null!;
-        return TypeRegistry[obj.GetType()];
+        var actualType = obj.GetType();
+        // Fast path: exact match
+        if (TypeRegistry.TryGetValue(actualType, out Func<object, string>? formatter))
+            return formatter;
+
+        // Fallback: check base types/interfaces
+        foreach (var (targetType, f) in TypeRegistry)
+        {
+            if (targetType.IsAssignableFrom(actualType))
+            {
+                return f;
+            }
+        }
+        return default!;
     }
 
 
