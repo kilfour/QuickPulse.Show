@@ -61,6 +61,13 @@ public static class The
         from print in Pulse.Trace(formatFunction(input))
         select input;
 
+    private readonly static Flow<object> SystemType =
+        from input in Pulse.Start<object?>()
+        from formatFunction in Pulse.Draw<Ministers, Func<object, string>>(a => a.GetSystemTypeFormatFunction(input))
+        from indent in EmitIndent
+        from print in Pulse.Trace(formatFunction(input))
+        select input;
+
     private readonly static Flow<object> InterspersedPrimed =
         from input in Pulse.Start<object>()
         from seperator in Pulse.When<Joiner>(a => a.NeedsSeparator(), Separator)
@@ -171,6 +178,7 @@ public static class The
             (() => Is.KeyValuePair(input),        /**/ () => Guarded(input, Pulse.ToFlow(KeyValuePair, input))),
             (() => Is.Collection(input),          /**/ () => Guarded(input, Pulse.ToFlow(Collection, (IEnumerable)input))),
             (() => Is.Tuple(input),               /**/ () => Guarded(input, Pulse.ToFlow(Tuple, input))),
+            (() => input is Type,                 /**/ () => Pulse.ToFlow(SystemType, input)),
             (() => Is.Object(input),              /**/ () => Guarded(input, Pulse.ToFlow(MaybeInlinedObject, input))),
             (() => true,                          /**/ () => Pulse.ToFlow(Fallback, input)))
         select input;

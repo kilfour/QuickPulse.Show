@@ -31,6 +31,9 @@ public class ManOfWealthAndTaste
     public ManOfWealthAndTaste ToSubstituteWithPropertyNamed<T>(string propertyName)
         => Chain.It(() => puzzles.RegisterFormatter(a => a.HasPropertyNamed<T>(propertyName), a => a.GetValueFor(propertyName)), this);
 
+    public ManOfWealthAndTaste ToRegisterSystemType<T>(Func<T, string> formatter)
+        => Chain.It(() => puzzles.RegisterSystemTypeFormatter(formatter), this);
+
     public ManOfWealthAndTaste To<T>(Action<Troubadour<T>> customize)
         => Chain.It(() => customize(new Troubadour<T>(this, puzzles)), this);
 
@@ -42,10 +45,12 @@ public class ManOfWealthAndTaste
                 PropertiesToIgnore = puzzles.PropertiesToIgnore,
                 Registry = puzzles.Registry,
                 TypeRegistry = puzzles.TypeRegistry,
+                SystemTypeRegistry = puzzles.SystemTypeRegistry,
                 WithClass = puzzles.WithClass,
                 SelfReferencingRegistry = puzzles.SelfReferencingRegistry,
                 InlinedTypes = puzzles.InlinedTypes,
                 Formatters = puzzles.Formatters
+
             }, puzzles.PrettyPrint))
             .SetArtery(Text.Capture())
             .Pulse(obj!)

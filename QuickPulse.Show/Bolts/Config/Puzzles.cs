@@ -10,8 +10,11 @@ public class Puzzles
 
     public PrimitivesRegistry Registry { get; } = new PrimitivesRegistry();
 
-    public Dictionary<Type, Func<object, string>> TypeRegistry { get; } = [];
+    public SystemTypeRegistry SystemTypeRegistry { get; init; } = new SystemTypeRegistry();
+    public void RegisterSystemTypeFormatter<T>(Func<T, string> formatter)
+        => SystemTypeRegistry.Register(formatter);
 
+    public Dictionary<Type, Func<object, string>> TypeRegistry { get; } = [];
     public void RegisterTypeFormatter<T>(Func<T, string> formatter)
     {
         TypeRegistry[typeof(T)] = a => formatter((T)a);

@@ -19,29 +19,15 @@ public record Ministers
 
 
     public Dictionary<Type, Func<object, string>> TypeRegistry { get; init; } = new();
-    // public Func<object, string> GetObjectFormatFunction(object obj)
-    // {
-    //     if (!TypeRegistry.ContainsKey(obj.GetType())) return null!;
-    //     return TypeRegistry[obj.GetType()];
-    // }
     public Func<object, string> GetObjectFormatFunction(object obj)
     {
-        var actualType = obj.GetType();
-        // Fast path: exact match
-        if (TypeRegistry.TryGetValue(actualType, out Func<object, string>? formatter))
-            return formatter;
-
-        // Fallback: check base types/interfaces
-        foreach (var (targetType, f) in TypeRegistry)
-        {
-            if (targetType.IsAssignableFrom(actualType))
-            {
-                return f;
-            }
-        }
-        return default!;
+        if (!TypeRegistry.ContainsKey(obj.GetType())) return null!;
+        return TypeRegistry[obj.GetType()];
     }
 
+    public SystemTypeRegistry SystemTypeRegistry { get; init; } = new SystemTypeRegistry();
+    public Func<object, string> GetSystemTypeFormatFunction(object obj) =>
+        SystemTypeRegistry.Get(obj.GetType()) ?? (x => x!.ToString()!);
 
     public Dictionary<Type, List<FieldInfo>> FieldsToIgnore { get; init; } = [];
     public bool ShouldNotBeIgnored(Type type, FieldInfo field)
