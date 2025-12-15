@@ -10,11 +10,4 @@ public static class TypePredicates
 
     public static bool HasPropertyNamed<T>(this Type type, string propertyName)
         => type.HasProperty(b => b.PropertyNamed<T>(propertyName));
-
-    public static object GetValueFor(this object target, string propertyName)
-    {
-        return target.GetType()
-            .GetProperty(propertyName)!
-            .GetValue(target)!;
-    }
 }

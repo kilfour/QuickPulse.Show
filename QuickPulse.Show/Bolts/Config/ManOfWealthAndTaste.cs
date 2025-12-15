@@ -28,8 +28,15 @@ public class ManOfWealthAndTaste
 
     public ManOfWealthAndTaste ToReplaceAll(Func<Type, bool> predicate, Func<object, string> formatter)
         => Chain.It(() => puzzles.RegisterFormatter(predicate, formatter), this);
+
     public ManOfWealthAndTaste ToSubstituteWithPropertyNamed<T>(string propertyName)
-        => Chain.It(() => puzzles.RegisterFormatter(a => a.HasPropertyNamed<T>(propertyName), a => a.GetValueFor(propertyName)), this);
+        => Chain.It(() => puzzles.RegisterFormatter(a => a.HasPropertyNamed<T>(propertyName),
+            a => GetValueFor(a, propertyName)), this);
+
+    private static object GetValueFor(object target, string propertyName)
+        => target.GetType()
+            .GetProperty(propertyName)!
+            .GetValue(target)!;
 
     public ManOfWealthAndTaste ToRegisterSystemType<T>(Func<T, string> formatter)
         => Chain.It(() => puzzles.RegisterSystemTypeFormatter(formatter), this);
