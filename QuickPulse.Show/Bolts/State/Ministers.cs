@@ -17,8 +17,7 @@ public record Ministers
     public Func<object?, string> GetFormatFunction(object obj) =>
         Registry.Get(obj.GetType()) ?? (x => x!.ToString()!);
 
-
-    public Dictionary<Type, Func<object, string>> TypeRegistry { get; init; } = new();
+    public Dictionary<Type, Func<object, string>> TypeRegistry { get; init; } = [];
     public Func<object, string> GetObjectFormatFunction(object obj)
     {
         if (!TypeRegistry.ContainsKey(obj.GetType())) return null!;

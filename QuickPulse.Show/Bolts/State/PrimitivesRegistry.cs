@@ -25,6 +25,7 @@ public class PrimitivesRegistry
         Register<uint>(x => x.ToString());
         Register<long>(x => x.ToString());
         Register<ulong>(x => x.ToString());
+        Register<Half>(x => x.ToString());
 
         Register<Guid>(x => x.ToString());
 

@@ -5,6 +5,10 @@ namespace QuickPulse.Show.Tests.Flat;
 public class PrimitiveTests
 {
     [Fact]
+    public void Introduce_Half() =>
+        Assert.Equal("65500", Introduce.This(Half.MaxValue), false);
+
+    [Fact]
     public void Introduce_Null() =>
         Assert.Equal("null", Introduce.This(null!), false);
 
