@@ -63,6 +63,14 @@ public record Ministers
         return null;
     }
 
+    public Dictionary<Type, Func<object, Func<string, string>>> PostProcessRegistry { get; init; } = [];
+    // public Func<object?, string> GetPostProcessor(object obj) =>
+    //     Registry.Get(obj.GetType()) ?? (x => x!.ToString()!);
+
+    public Dictionary<Type, string> PrefixRegistry { get; init; } = [];
+    public string GetPrefix(object obj) =>
+        PrefixRegistry.TryGetValue(obj.GetType(), out var prefix) ? prefix : string.Empty;
+
     public IEnumerable<PropertyInfo> Properties(object input) =>
         input.GetType()
             .GetProperties(BindingFlags.Instance | BindingFlags.Public)

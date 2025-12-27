@@ -33,6 +33,15 @@ public class Spike
     }
 
     [Fact]
+    public void Introduce_part_of_the_coach_again()
+    {
+        var result = Please.AllowMe()
+            .ToIgnore<Models.Coach, HashSet<string>>(a => a.Skills)
+            .IntroduceThis(new Models.Coach("name", "email"));
+        Assert.Equal("{ Name: \"name\", Email: \"email\" }", result);
+    }
+
+    [Fact]
     public void Introduce_a_totally_different_coach()
     {
         var result = Please.AllowMe()
@@ -48,6 +57,33 @@ public class Spike
             .To<Models.Coach>(a => a.Use(a => $"new Models.Coach(\"{a.Name}\", \"{a.Email}\")"))
             .IntroduceThis(new Models.Coach("name", "email"));
         Assert.Equal("new Models.Coach(\"name\", \"email\")", result);
+    }
+
+    [Fact]
+    public void Introduce_a_prefixed_coach()
+    {
+        var result = Please.AllowMe()
+            .ToPrefix<Models.Coach>("PREFIX ")
+            .IntroduceThis(new Models.Coach("name", "email"));
+        Assert.Equal("PREFIX { Name: \"name\", Email: \"email\", Skills: [ ] }", result);
+    }
+
+    [Fact]
+    public void Introduce_a_prefixed_list()
+    {
+        var result = Please.AllowMe()
+            .ToPrefix<List<int>>("PREFIX ")
+            .IntroduceThis(new List<int> { 42 });
+        Assert.Equal("PREFIX [ 42 ]", result);
+    }
+
+    [Fact(Skip = "WIP")]
+    public void Introduce_a_postprocessed_coach()
+    {
+        var result = Please.AllowMe()
+            .ToPostProcess<Models.Coach>(a => "PREFIX " + a)
+            .IntroduceThis(new Models.Coach("name", "email"));
+        Assert.Equal("PREFIX { Name: \"name\", Email: \"email\", Skills: [ ] } SUFFIX", result);
     }
 
     [Fact]

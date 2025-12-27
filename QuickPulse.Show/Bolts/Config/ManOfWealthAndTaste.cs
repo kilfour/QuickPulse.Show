@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using System.Reflection;
 using QuickPulse.Arteries;
 using QuickPulse.Instruments;
 using QuickPulse.Show.Reflects;
@@ -44,6 +46,37 @@ public class ManOfWealthAndTaste
     public ManOfWealthAndTaste To<T>(Action<Troubadour<T>> customize)
         => Chain.It(() => customize(new Troubadour<T>(this, puzzles)), this);
 
+    public ManOfWealthAndTaste ToPostProcess<T>(Func<string, string> postProcesser)
+        => Chain.It(() => puzzles.RegisterPostProcesser<T>(postProcesser), this);
+
+    public ManOfWealthAndTaste ToPrefix<T>(string prefix)
+        => Chain.It(() => puzzles.RegisterPrefix<T>(prefix), this);
+
+    public ManOfWealthAndTaste ToIgnore<T, TProp>(Expression<Func<T, TProp>> expr)
+    {
+        var member = AsMemberInfo(expr);
+        if (member is FieldInfo field) { puzzles.RegisterFieldToIgnore<T>(field); }
+        if (member is PropertyInfo prop) { puzzles.RegisterPropertyToIgnore<T>(prop); }
+        return this;
+    }
+
+    private static MemberInfo AsMemberInfo<TTarget, TMember>(Expression<Func<TTarget, TMember>> expression)
+    {
+        if (expression.Body is MemberExpression memberExpr)
+        {
+            return memberExpr.Member;
+        }
+
+        if (expression.Body is UnaryExpression unary && unary.Operand is MemberExpression unaryMember)
+        {
+            return unaryMember.Member;
+        }
+
+        throw new ArgumentException($"Expression '{expression}' does not refer to a field or property.");
+    }
+    //.ToPrefix<List<Product>>(Environment.NewLine)
+
+    //.ToIgnore<Product>(a => a.Id)
     public string IntroduceThis<T>(T obj)
         => Signal.From(The.Tsar(
             new Ministers()
@@ -56,7 +89,9 @@ public class ManOfWealthAndTaste
                 WithClass = puzzles.WithClass,
                 SelfReferencingRegistry = puzzles.SelfReferencingRegistry,
                 InlinedTypes = puzzles.InlinedTypes,
-                Formatters = puzzles.Formatters
+                Formatters = puzzles.Formatters,
+                PostProcessRegistry = puzzles.PostProcessRegistry,
+                PrefixRegistry = puzzles.PrefixRegistry
 
             }, puzzles.PrettyPrint))
             .SetArtery(Text.Capture())

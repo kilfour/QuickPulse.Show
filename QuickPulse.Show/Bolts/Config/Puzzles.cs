@@ -20,6 +20,19 @@ public class Puzzles
         TypeRegistry[typeof(T)] = a => formatter((T)a);
     }
 
+    public Dictionary<Type, Func<object, Func<string, string>>> PostProcessRegistry { get; } = [];
+    public void RegisterPostProcesser<T>(Func<string, string> formatter)
+    {
+        PostProcessRegistry[typeof(T)] = a => formatter;
+    }
+
+    public Dictionary<Type, string> PrefixRegistry { get; } = [];
+    public void RegisterPrefix<T>(string prefix)
+    {
+        PrefixRegistry[typeof(T)] = prefix;
+    }
+
+
     public Dictionary<Type, List<FieldInfo>> FieldsToIgnore { get; } = [];
     public void RegisterFieldToIgnore<T>(FieldInfo field)
     {

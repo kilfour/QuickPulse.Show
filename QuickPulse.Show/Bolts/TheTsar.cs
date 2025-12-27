@@ -37,6 +37,13 @@ public static class The
     private readonly static Flow<Flow> Colon = Pulse.Trace(": ");
     private readonly static Flow<Flow> Null = Indented("null");
 
+    // private readonly static Flow<string> PostProcess =
+    //     from input in Pulse.Start<string>()
+    //     from processor in Pulse.Draw<Ministers, Func<string, string>>(a => a.GetPostProcessor(input))
+    //     from customized in Pulse.TraceIf(processor != null, () => processor(input))
+    //     from defaulted in Pulse.TraceIf(processor == null, () => input)
+    //     select input;
+
     private static Flow<Flow> Enclosed(string left, string right, Flow<Flow> innerFlow) =>
         from leftBracket in Pulse.Trace(left)
         from _ in Pulse.Scoped<IndentControl>(a => a.IncreaseLevel().EnableIndent(), innerFlow)
@@ -89,6 +96,8 @@ public static class The
         from input in Pulse.Start<IEnumerable>()
         from needsInlining in Pulse.Draw<Ministers, bool>(a => a.NeedsInlining(input))
         from indent in Pulse.TraceIf<IndentControl>(a => needsInlining && a.IsNewLine(), a => Indent(a.Level))
+        from prefix in Pulse.Draw<Ministers, string>(a => a.GetPrefix(input))
+        from tracePrefix in Pulse.Trace(prefix)
         from _ in Pulse.Scoped<IndentControl>(
             a => a.Inline(needsInlining),
             BracketedInterspersed.Dissipate())
@@ -137,6 +146,8 @@ public static class The
 
     private readonly static Flow<object> DefaultObject =
         from input in Pulse.Start<object>()
+        from prefix in Pulse.Draw<Ministers, string>(a => a.GetPrefix(input))
+        from tracePrefix in Pulse.Trace(prefix)
         from properties in Pulse.Draw<Ministers, IEnumerable<ObjectProperty>>(a => a.ObjectProperties(input))
         from classname in Pulse.TraceIf<Ministers>(a => a.WithClass, () => $"{input.GetType().Name} ")
         from obj in Braced(Pulse.ToFlow(Interspersed, properties))
