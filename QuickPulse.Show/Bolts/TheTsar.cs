@@ -37,13 +37,6 @@ public static class The
     private readonly static Flow<Flow> Colon = Pulse.Trace(": ");
     private readonly static Flow<Flow> Null = Indented("null");
 
-    // private readonly static Flow<string> PostProcess =
-    //     from input in Pulse.Start<string>()
-    //     from processor in Pulse.Draw<Ministers, Func<string, string>>(a => a.GetPostProcessor(input))
-    //     from customized in Pulse.TraceIf(processor != null, () => processor(input))
-    //     from defaulted in Pulse.TraceIf(processor == null, () => input)
-    //     select input;
-
     private static Flow<Flow> Enclosed(string left, string right, Flow<Flow> innerFlow) =>
         from leftBracket in Pulse.Trace(left)
         from _ in Pulse.Scoped<IndentControl>(a => a.IncreaseLevel().EnableIndent(), innerFlow)
