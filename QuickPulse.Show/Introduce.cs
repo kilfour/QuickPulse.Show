@@ -8,7 +8,7 @@ namespace QuickPulse.Show;
 public static class Introduce
 {
     public static string This(object obj, bool prettyPrint = true) =>
-        Signal.From(The.Tsar(new Ministers(), prettyPrint))
+        Signal.From<object>(a => The.Tsar(new Ministers(), prettyPrint, a))
             .SetArtery(Text.Capture())
             .Pulse(obj)
             .GetArtery<StringSink>()

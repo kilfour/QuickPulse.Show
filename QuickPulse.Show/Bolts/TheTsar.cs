@@ -6,12 +6,11 @@ public static class The
 {
     private const string CycleMarker = "<cycle>";
 
-    private readonly static Flow<object> Cycle =
-        from input in Pulse.Start<object>()
+    private static Flow<Flow> Cycle(object input) =>
         from ministers in Pulse.Draw<Ministers>()
         let formatFunction = ministers.GetReferencingFormatFunction(input)
         from _ in formatFunction is null ? Indented(CycleMarker) : Indented(formatFunction(input))
-        select input;
+        select Flow.Continue;
 
     private readonly static Flow<Flow> NewLine =
         Pulse.Trace(Environment.NewLine).Then(Pulse.Manipulate<IndentControl>(a => a.OnNewLine(true)).Dissipate());
@@ -48,127 +47,109 @@ public static class The
     private static Flow<Flow> Bracketed(Flow<Flow> innerFlow) => Enclosed("(", ")", innerFlow);
     private static Flow<Flow> SquareBracketed(Flow<Flow> innerFlow) => Enclosed("[", "]", innerFlow);
 
-    private readonly static Flow<object> Fallback =
-        from input in Pulse.Start<object?>()
+    private static Flow<Flow> Fallback(object input) =>
         from indent in EmitIndent
         from print in Pulse.Trace(input)
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<object> Primitive =
-        from input in Pulse.Start<object?>()
+    private static Flow<Flow> Primitive(object input) =>
         from formatFunction in Pulse.Draw<Ministers, Func<object?, string>>(a => a.GetFormatFunction(input))
         from indent in EmitIndent
         from print in Pulse.Trace(formatFunction(input))
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<object> SystemType =
-        from input in Pulse.Start<object?>()
+    private static Flow<Flow> SystemType(object input) =>
         from formatFunction in Pulse.Draw<Ministers, Func<object, string>>(a => a.GetSystemTypeFormatFunction(input))
         from indent in EmitIndent
         from print in Pulse.Trace(formatFunction(input))
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<object> InterspersedPrimed =
-        from input in Pulse.Start<object>()
+    private static Flow<Flow> InterspersedPrimed(object input) =>
         from seperator in Pulse.When<Joiner>(a => a.NeedsSeparator(), Separator)
         from _ in Spacing.Then(Pulse.ToFlow(Anastasia!, input))
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<IEnumerable> Interspersed =
-        from input in Pulse.Start<IEnumerable>()
+    private static Flow<Flow> Interspersed(IEnumerable input) =>
         from _ in Pulse.Scoped<Joiner>(a => a.Prime(),
             Pulse.ToFlow(InterspersedPrimed, input.Cast<object>()))
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<IEnumerable> BracketedInterspersed =
-        from input in Pulse.Start<IEnumerable>()
-        from _ in EmitIndent.Then(SquareBracketed(Pulse.ToFlow(Interspersed, input)))
-        select input;
+    private static Flow<Flow> BracketedInterspersed(IEnumerable input) =>
+        EmitIndent.Then(SquareBracketed(Pulse.ToFlow(Interspersed, input)));
 
-    private readonly static Flow<IEnumerable> Collection =
-        from input in Pulse.Start<IEnumerable>()
+    private static Flow<Flow> Collection(IEnumerable input) =>
         from needsInlining in Pulse.Draw<Ministers, bool>(a => a.NeedsInlining(input))
         from indent in Pulse.TraceIf<IndentControl>(a => needsInlining && a.IsNewLine(), a => Indent(a.Level))
         from prefix in Pulse.Draw<Ministers, string>(a => a.GetPrefix(input))
         from tracePrefix in Pulse.Trace(prefix)
         from _ in Pulse.Scoped<IndentControl>(
-            a => a.Inline(needsInlining),
-            BracketedInterspersed.Dissipate())
-        select input;
+            a => a.Inline(needsInlining), BracketedInterspersed(input))
+        select Flow.Continue;
 
-    private readonly static Flow<(object, object)> LabeledValue =
-        from input in Pulse.Start<(object Label, object Value)>()
+    private static Flow<Flow> LabeledValue((object Label, object Value) input) =>
         from label in Pulse.ToFlow(Anastasia!, input.Label)
         from _ in Pulse.Manipulate<IndentControl>(a => a.OnNewLine(false))
         from colon in Colon
         from value in Pulse.Scoped<IndentControl>(
             a => a.DisableIndent(),
             Pulse.ToFlow(Anastasia!, input.Value))
-        select input;
+        select Flow.Continue;
 
     private static (object, object) KeyValueAsTuple(object input) =>
         (input.GetType().GetProperty("Key")?.GetValue(input)!,
         input.GetType().GetProperty("Value")?.GetValue(input)!);
 
-    private readonly static Flow<object> KeyValuePair =
-        from input in Pulse.Start<object>()
+    private static Flow<Flow> KeyValuePair(object input) =>
         from _ in Pulse.Scoped<IndentControl>(a => a.EnableIndent(),
             Pulse.ToFlow(LabeledValue, KeyValueAsTuple(input)))
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<IDictionary> Dictionary =
-        from input in Pulse.Start<IDictionary>()
+    private static Flow<Flow> Dictionary(IDictionary input) =>
         from _ in EmitIndent.Then(Braced(Pulse.ToFlow(Interspersed, input)))
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<ObjectProperty> Property =
-        from input in Pulse.Start<ObjectProperty>()
+    private static Flow<Flow> Property(ObjectProperty input) =>
         from key in EmitIndent.Then(Pulse.Trace(input.Name))
         from disableNewLine in Pulse.Manipulate<IndentControl>(a => a.OnNewLine(false))
         from colon in Colon
         from _ in Pulse.Scoped<IndentControl>(a => a.DisableIndent(),
             Pulse.ToFlow(Anastasia!, input.Value))
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<object> Tuple =
-        from input in Pulse.Start<object>()
+    private static Flow<Flow> Tuple(object input) =>
         from fields in Pulse.Draw<Ministers, IEnumerable<object>>(a => a.FieldValues(input))
         from indent in EmitIndent
         from tuple in Bracketed(Pulse.ToFlow(Interspersed, (IEnumerable)fields))
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<object> DefaultObject =
-        from input in Pulse.Start<object>()
+    private static Flow<Flow> DefaultObject(object input) =>
         from prefix in Pulse.Draw<Ministers, string>(a => a.GetPrefix(input))
         from tracePrefix in Pulse.Trace(prefix)
         from properties in Pulse.Draw<Ministers, IEnumerable<ObjectProperty>>(a => a.ObjectProperties(input))
         from classname in Pulse.TraceIf<Ministers>(a => a.WithClass, () => $"{input.GetType().Name} ")
         from obj in Braced(Pulse.ToFlow(Interspersed, properties))
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<object> Object =
-        from input in Pulse.Start<object>()
+    private static Flow<Flow> Object(object input) =>
         from formatter in Pulse.Draw<Ministers, Func<object, string>>(a => a.GetObjectFormatFunction(input))
         from customized in Pulse.TraceIf(formatter != null, () => formatter(input))
         from defaulted in Pulse.ToFlowIf(formatter == null, DefaultObject, () => input)
-        select input;
+        select Flow.Continue;
 
-    private readonly static Flow<object> MaybeInlinedObject =
-        from input in Pulse.Start<object>()
+    private static Flow<Flow> MaybeInlinedObject(object input) =>
         from needsInlining in Pulse.Draw<Ministers, bool>(a => a.NeedsInlining(input))
         from indent in EmitIndent
         from obj in Pulse.Scoped<IndentControl>(
             a => a.Inline(needsInlining),
             Pulse.ToFlow(Object, input))
-        select input;
+        select Flow.Continue;
 
     private static Flow<Flow> Guarded(object node, Flow<Flow> inner) =>
         from _ in Pulse.Scoped<CycleGuard>(m => m.Enter(node), inner)
         from __ in Pulse.Scoped<CycleGuard>(m => m.Exit(node), Pulse.NoOp())
         select Flow.Continue;
 
-    private readonly static Flow<object> Anastasia =
-        from input in Pulse.Start<object>()
+    private static Flow<Flow> Anastasia(object input) =>
         from ministers in Pulse.Draw<Ministers>()
         from cycleGuard in Pulse.Draw<CycleGuard>()
         let registry = ministers.Registry
@@ -185,14 +166,13 @@ public static class The
             (() => input is Type,                 /**/ () => Pulse.ToFlow(SystemType, input)),
             (() => Is.Object(input),              /**/ () => Guarded(input, Pulse.ToFlow(MaybeInlinedObject, input))),
             (() => true,                          /**/ () => Pulse.ToFlow(Fallback, input)))
-        select input;
+        select Flow.Continue;
 
-    public static Flow<object> Tsar(Ministers ministers, bool prettyPrint) =>
-        from input in Pulse.Start<object>()
+    public static Flow<Flow> Tsar(Ministers ministers, bool prettyPrint, object input) =>
         from _1 in Pulse.Prime(() => ministers)
         from _2 in Pulse.Prime(() => new Joiner())
         from _3 in Pulse.Prime(() => new CycleGuard())
         from _4 in Pulse.Prime(() => new IndentControl(prettyPrint))
         from __ in Pulse.ToFlow(Anastasia, input)
-        select input;
+        select Flow.Continue;
 }

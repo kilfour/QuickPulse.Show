@@ -74,11 +74,9 @@ public class ManOfWealthAndTaste
 
         throw new ArgumentException($"Expression '{expression}' does not refer to a field or property.");
     }
-    //.ToPrefix<List<Product>>(Environment.NewLine)
 
-    //.ToIgnore<Product>(a => a.Id)
     public string IntroduceThis<T>(T obj)
-        => Signal.From(The.Tsar(
+        => Signal.From<object>(a => The.Tsar(
             new Ministers()
             {
                 FieldsToIgnore = puzzles.FieldsToIgnore,
@@ -93,7 +91,7 @@ public class ManOfWealthAndTaste
                 PostProcessRegistry = puzzles.PostProcessRegistry,
                 PrefixRegistry = puzzles.PrefixRegistry
 
-            }, puzzles.PrettyPrint))
+            }, puzzles.PrettyPrint, a))
             .SetArtery(Text.Capture())
             .Pulse(obj!)
             .GetArtery<StringSink>()
