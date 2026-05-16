@@ -1,10 +1,8 @@
-
-
 using System.Collections;
 using System.Reflection;
-using QuickPulse.Show.Bolts.State;
+using QuickPulse;
 
-namespace QuickPulse.Show.Bolts;
+namespace QuickPulse.Show.Bolts.State;
 
 public record Ministers
 {

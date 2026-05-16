@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using QuickPulse.Arteries;
 using QuickPulse.Show.Bolts;
+using QuickPulse.Show.Bolts.State;
 
 namespace QuickPulse.Show;
 

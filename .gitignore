@@ -10,3 +10,4 @@ temp*.*
 .quickpulse
 .quickacid
 nuget.md
+*.lscache

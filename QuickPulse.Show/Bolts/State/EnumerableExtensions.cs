@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace QuickPulse.Show.Bolts;
+namespace QuickPulse.Show.Bolts.State;
 
 public static class EnumerableExtensions
 {

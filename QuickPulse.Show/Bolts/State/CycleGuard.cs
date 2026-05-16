@@ -1,4 +1,4 @@
-namespace QuickPulse.Show.Bolts;
+namespace QuickPulse.Show.Bolts.State;
 
 public record CycleGuard
 {
@@ -10,14 +10,6 @@ public record CycleGuard
     {
         if (IsLeaf(x)) return this;
         var next = new HashSet<object>(Path, ReferenceEqualityComparer.Instance) { x! };
-        return this with { Path = next };
-    }
-    public CycleGuard Exit(object? x)
-    {
-        if (IsLeaf(x)) return this;
-        if (!Path.Contains(x!)) return this;
-        var next = new HashSet<object>(Path, ReferenceEqualityComparer.Instance);
-        next.Remove(x!);
         return this with { Path = next };
     }
 }

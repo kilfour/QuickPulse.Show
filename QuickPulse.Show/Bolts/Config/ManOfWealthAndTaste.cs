@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using QuickPulse.Arteries;
 using QuickPulse.Instruments;
+using QuickPulse.Show.Bolts.State;
 using QuickPulse.Show.Reflects;
 
 namespace QuickPulse.Show.Bolts;
