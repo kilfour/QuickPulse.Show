@@ -22,7 +22,7 @@ readable snapshot of values as they flow through your code.
 The output follows a C#-inspired, developer-friendly style:
 
 * **Objects** use `{ Prop: Value }` syntax
-* **Strings** are quoted
+* **Strings** are quoted, with quotes, backslashes, control characters, and non-standard whitespace escaped
 * **Primitives** render as-is
 * **Collections** render in square brackets: `[ ... ]`
 * **Tuples** and anonymous types print with parentheses or braces respectively

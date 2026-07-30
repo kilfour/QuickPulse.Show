@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using WibblyWobbly;
 
 namespace QuickPulse.Show.Bolts.State;
@@ -7,10 +8,52 @@ public class PrimitivesRegistry
 {
     private readonly Dictionary<Type, Func<object, string>> registered = new();
 
+    private static string FormatString(string value)
+    {
+        var result = new StringBuilder(value.Length + 2);
+        result.Append('"');
+
+        foreach (var character in value)
+        {
+            switch (character)
+            {
+                case '"': result.Append("\\\""); break;
+                case '\\': result.Append("\\\\"); break;
+                case '\0': result.Append("\\0"); break;
+                case '\a': result.Append("\\a"); break;
+                case '\b': result.Append("\\b"); break;
+                case '\f': result.Append("\\f"); break;
+                case '\n': result.Append("\\n"); break;
+                case '\r': result.Append("\\r"); break;
+                case '\t': result.Append("\\t"); break;
+                case '\v': result.Append("\\v"); break;
+
+                default:
+                    if (char.IsControl(character) ||
+                        character != ' ' && char.IsWhiteSpace(character))
+                    {
+                        result
+                            .Append("\\u")
+                            .Append(((int)character).ToString(
+                                "X4",
+                                CultureInfo.InvariantCulture));
+                    }
+                    else
+                    {
+                        result.Append(character);
+                    }
+
+                    break;
+            }
+        }
+
+        return result.Append('"').ToString();
+    }
+
     public PrimitivesRegistry()
     {
         Register<double>(x => x.ToString("G", CultureInfo.InvariantCulture));
-        Register<string>(x => x == null ? "null" : $"\"{x}\"");
+        Register<string>(FormatString);
         Register<bool>(x => x ? "true" : "false");
         Register<char>(x => $"'{x}'");
         Register<decimal>(x => x.ToString("G", CultureInfo.InvariantCulture));

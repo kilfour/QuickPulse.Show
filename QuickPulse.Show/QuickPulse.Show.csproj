@@ -4,10 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>0.1.16</Version>
+    <Version>0.1.17</Version>
     <Authors>Kilfour</Authors>
     <PackageId>QuickPulse.Show</PackageId>
     <Description>Please allow `this` to introduce oneself, hope you guess my type.</Description>
+    <PackageReleaseNotes>Strings are now escaped correctly, including quotes, backslashes, control characters, and non-standard whitespace.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/kilfour/QuickPulse.Show</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>debugging;diagnostics;pretty-printing;quickpulse</PackageTags>

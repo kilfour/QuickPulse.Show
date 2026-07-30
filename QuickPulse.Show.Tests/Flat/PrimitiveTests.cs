@@ -24,6 +24,23 @@ public class PrimitiveTests
     public void Introduce_String() =>
         Assert.Equal("\"hello\"", Introduce.This("hello"), false);
 
+    [Theory]
+    [InlineData("a+b", "\"a+b\"")]
+    [InlineData("\0", "\"\\0\"")]
+    [InlineData("\a", "\"\\a\"")]
+    [InlineData("\b", "\"\\b\"")]
+    [InlineData("\f", "\"\\f\"")]
+    [InlineData("line\nbreak", "\"line\\nbreak\"")]
+    [InlineData("\r", "\"\\r\"")]
+    [InlineData("\t", "\"\\t\"")]
+    [InlineData("\v", "\"\\v\"")]
+    [InlineData("\u001F", "\"\\u001F\"")]
+    [InlineData("\u00A0", "\"\\u00A0\"")]
+    [InlineData("quote: \"", "\"quote: \\\"\"")]
+    [InlineData("backslash: \\", "\"backslash: \\\\\"")]
+    public void Introduce_String_Escapes(string input, string expected) =>
+        Assert.Equal(expected, Introduce.This(input), false);
+
     [Fact]
     public void Introduce_Bool_True() =>
         Assert.Equal("true", Introduce.This(true), false);
